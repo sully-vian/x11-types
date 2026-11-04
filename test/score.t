@@ -1,5 +1,7 @@
   $ ../run.sh
-  pass valid/binding_table
+  FAIL valid/binding_table: rejected
+  Error: The value anyModifier has type [ `Any ] Mask.mask
+         The first variant type does not allow tag(s) `Key
   pass valid/button_state
   pass valid/change_active_pointer_grab
   pass valid/check_mask_event
@@ -32,14 +34,18 @@
   pass invalid/do_not_propagate_selection
   Error: The field access attributes.your_event_mask has type
          The second variant type does not allow tag(s) `Event, `PointerEvent
-  FAIL invalid/grab_button_any_modifier_union: accepted
+  pass invalid/grab_button_any_modifier_union
+  Error: The value mod4Mask has type [> `Key ] Mask.mask
+         The second variant type does not allow tag(s) `Key
   pass invalid/grab_button_exposure
   Error: The value exposureMask has type [> `Event ] Mask.mask
          The second variant type does not allow tag(s) `Event
   pass invalid/grab_button_modifier_button
   Error: This expression has type [> `Button | `Key ] Mask.mask
          The second variant type does not allow tag(s) `Button
-  FAIL invalid/grab_key_any_modifier_union: accepted
+  pass invalid/grab_key_any_modifier_union
+  Error: The value shiftMask has type [> `Key ] Mask.mask
+         The second variant type does not allow tag(s) `Key
   pass invalid/grab_key_button
   Error: This expression has type [> `Button | `Key ] Mask.mask
          The second variant type does not allow tag(s) `Button
@@ -58,7 +64,9 @@
   pass invalid/shared_event_mask
   Error: The value m has type [> `Event | `PointerDeviceEvent ] Mask.mask
          The second variant type does not allow tag(s) `Event
-  FAIL invalid/ungrab_button_any_modifier_union: accepted
+  pass invalid/ungrab_button_any_modifier_union
+  Error: The value shiftMask has type [> `Key ] Mask.mask
+         The second variant type does not allow tag(s) `Key
   pass invalid/ungrab_key_button
   Error: This expression has type [> `Button | `Key ] Mask.mask
          The second variant type does not allow tag(s) `Button
@@ -79,7 +87,7 @@
          The second variant type does not allow tag(s) `DeviceEvent
   pass misuse/grab_key_int
   Error: The constant 0x40 has type int but an expression was expected of type
-         Mask.keyMask = [ `Any | `Key ] Mask.mask
+         [< `Any | `Key ] Mask.mask
   pass misuse/grab_pointer_button_mask
   Error: The value button1Mask has type [> `Button ] Mask.mask
          The second variant type does not allow tag(s) `Button
@@ -87,8 +95,8 @@
   Error: The value structureNotifyMask has type [> `Event ] Mask.mask
          The second variant type does not allow tag(s) `Event
   pass misuse/select_input_any_modifier
-  Error: The value anyModifier has type [> `Any ] Mask.mask
-         The second variant type does not allow tag(s) `Any
+  Error: The value anyModifier has type [ `Any ] Mask.mask
+         These two variant types have no intersection
   pass misuse/select_input_modifier
   Error: The value shiftMask has type [> `Key ] Mask.mask
          The second variant type does not allow tag(s) `Key
@@ -99,6 +107,6 @@
   Error: The value keyPressMask has type [> `DeviceEvent ] Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 21/21
-  invalid: 13/16
+  valid: 20/21
+  invalid: 16/16
   misuse: 12/12
