@@ -95,4 +95,36 @@ from a variable (no `[ 'a | `Any ]`). That is a second dimension, whichever way
 it's written. It also rules out the idea "a separate type for AnyModifier": the
 table needs one type for all its entries.
 
+### 04: a second parameter, for what may be or-ed
+
+Branch `exp/04-alone`. Following experiment 3's argument: `type (+'a, +'c) mask`,
+where `'a` is experiment 2's tags and `'c` says whether the mask can be or-ed.
+`( ||| )` takes two `('a, union) mask` and returns `('a, 'c) mask`, constants
+are free in `'c`, and `anyModifier : ([> `Any ], alone) mask`. So a constant or
+a union fits either, and `anyModifier` only fits `alone`. `keyMask` is
+`([ `Key | `Any ], alone) mask`, the other field types are `union`. `&&&` and
+`&~` don't look at `'c`, except that `&~` keeps its first operand's:
+`anyModifier &~ m` is AnyModifier or 0, valid either way.
+
+Expected: 21/21, 16/16, 12/12.
+
+Score: valid 21/21, invalid 16/16, misuse 12/12. Flipped the three
+`*_any_modifier_union` to pass, nothing else moved. Merged. Every rejection reads
+as its case's comment says: `Type Mask.alone is not compatible with type
+Mask.union` for AnyModifier in a union, a missing tag for the rest.
+
+Programs outside the spec (the spec can't grow for now: see "Questions for the
+user") show where it's still stricter than C:
+
+- `grab_key (List.fold_left ( ||| ) noModifier [shiftMask; lockMask])`: the fold
+  ties the accumulator to the operands, so its type is `union`, and `keyMask`
+  wants `alone`. Rule 2 says accept. A real pattern for porting C loops.
+- `select_input (p : pointerEventMask)` and `select_input
+  attributes.do_not_propagate_mask`: subsets of SETofEVENT, refused because the
+  fields are closed. Rule 2 says accept. `(p :> eventMask)` works thanks to
+  covariance.
+- `grab_key ((mod4Mask ||| button1Mask) &~ button1Mask)`,
+  `grab_key (anyModifier ||| anyModifier)`, `grab_key (anyModifier ||| noModifier)`:
+  see the summary, no design of this kind can take them.
+
 ## Questions for the user
