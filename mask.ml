@@ -2,11 +2,11 @@ type (+'a, +'c) mask = int
 type union
 type alone
 
-type keyMask = ([ `Key ], alone) mask
-type stateMask = ([ `Key | `Button ], union) mask
-type eventMask = ([ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], union) mask
-type pointerEventMask = ([ `PointerEvent | `PointerDeviceEvent ], union) mask
-type deviceEventMask = ([ `DeviceEvent | `PointerDeviceEvent ], union) mask
+type keyMask = ([ `Grab ], alone) mask
+type stateMask = ([ `State ], union) mask
+type eventMask = ([ `Event ], union) mask
+type pointerEventMask = ([ `Pointer ], union) mask
+type deviceEventMask = ([ `Device ], union) mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
@@ -91,7 +91,7 @@ let create_window ?(event_mask = 0) ?(do_not_propagate_mask = 0) () =
   device_events do_not_propagate_mask
 
 (* XCheckMaskEvent only reads Xlib's queue: the server never sees the mask *)
-let check_mask_event (_ : eventMask) = ()
+let check_mask_event _ = ()
 
 (* Masks the server sends: the raw values, as C gets them *)
 type keyEvent = { state : stateMask }
