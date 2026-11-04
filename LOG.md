@@ -189,4 +189,10 @@ int still can't become a mask.
 Expected: no flip, since no case converts a mask to an int. Checks that the
 phantom parameters still separate types through a private abbreviation.
 
+Score: valid 21/21, invalid 16/16, misuse 12/12. No flip, `score.t` unchanged, and
+the programs outside the spec answer as on `main`. The parameters still separate
+types once they're declared covariant. Not merged: a tie, and not simpler. It
+stays an option for the port if users need `(m :> int)`, without changing anything
+else. Masks are already `int`s for the ctypes bindings, inside the library.
+
 ## Questions for the user
