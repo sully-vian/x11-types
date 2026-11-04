@@ -36,4 +36,14 @@ types, a separate type for AnyModifier.
 
 ## Experiments
 
+### 01: x11's design as it stands
+
+Branch `exp/01-x11-tags`. One polymorphic variant tag per group of flags
+(`` `Key ``, `` `Button ``, `` `Any ``, and the four event groups), `type 'a mask`
+invariant, constants open, fields closed, plus `keys` with an open result. It
+measures the starting point on the current spec.
+
+Expected: every family mix-up rejected. Fails `valid/shared_event_mask` (value
+restriction), and the three `*_any_modifier_union` cases.
+
 ## Questions for the user
