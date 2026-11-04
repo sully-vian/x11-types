@@ -85,7 +85,7 @@
          The second variant type does not allow tag(s) `DeviceEvent
   pass misuse/grab_key_int
   Error: The constant 0x40 has type int but an expression was expected of type
-         Mask.keyMask = ([ `Key ], Mask.alone) Mask.mask
+         ([ `Key ], 'a) Mask.mask
   pass misuse/grab_pointer_button_mask
   Error: The value button1Mask has type ([> `Button ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
