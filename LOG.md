@@ -208,6 +208,12 @@ The idea: give the event mask its own variable, `'d`.
 
 Expected: that case flips to pass, for 25/16/12.
 
+Score: valid 25/25, invalid 16/16, misuse 12/12. Flipped
+`valid/grab_button_any_modifier_events` to pass. Against `main`, it also flips
+`valid/fold_modifiers`, `valid/pointer_mask_as_selection` and
+`valid/device_mask_as_selection`. Merged: it now beats `main`'s 22/25 on the score.
+`test/spec.t` didn't change on the branch beyond the totals it got from `main`.
+
 ## Questions for the user
 
 1. **Merge `exp/06-open-calls`?** It ties `main` on the score with longer types,
