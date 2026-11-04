@@ -108,4 +108,23 @@ a union fits either, and `anyModifier` only fits `alone`. `keyMask` is
 
 Expected: 21/21, 16/16, 12/12.
 
+Score: valid 21/21, invalid 16/16, misuse 12/12. Flipped the three
+`*_any_modifier_union` to pass, nothing else moved. Merged. Every rejection reads
+as its case's comment says: `Type Mask.alone is not compatible with type
+Mask.union` for AnyModifier in a union, a missing tag for the rest.
+
+Programs outside the spec (the spec can't grow for now: see "Questions for the
+user") show where it's still stricter than C:
+
+- `grab_key (List.fold_left ( ||| ) noModifier [shiftMask; lockMask])`: the fold
+  ties the accumulator to the operands, so its type is `union`, and `keyMask`
+  wants `alone`. Rule 2 says accept. A real pattern for porting C loops.
+- `select_input (p : pointerEventMask)` and `select_input
+  attributes.do_not_propagate_mask`: subsets of SETofEVENT, refused because the
+  fields are closed. Rule 2 says accept. `(p :> eventMask)` works thanks to
+  covariance.
+- `grab_key ((mod4Mask ||| button1Mask) &~ button1Mask)`,
+  `grab_key (anyModifier ||| anyModifier)`, `grab_key (anyModifier ||| noModifier)`:
+  see the summary, no design of this kind can take them.
+
 ## Questions for the user
