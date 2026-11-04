@@ -69,4 +69,13 @@ Score: valid 21/21, invalid 13/16, misuse 12/12. Flipped
 `valid/shared_event_mask` to pass, as expected. Merged: same valid as the
 baseline, 25 more rejections. What's left is the three `*_any_modifier_union`.
 
+### 03: AnyModifier closed
+
+Branch `exp/03-closed-any`. Experiment 2 with `anyModifier : [ `Any ] mask` and
+the grabs taking `[< `Key | `Any ] mask`, the idea recorded before the first
+experiment, measured again on the current spec.
+
+Expected: the three `*_any_modifier_union` cases pass, `valid/binding_table`
+fails: valid 20/21, invalid 16/16, misuse 12/12.
+
 ## Questions for the user
