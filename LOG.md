@@ -65,4 +65,8 @@ value restriction generalizes `let m = a ||| b`.
 Expected: `valid/shared_event_mask` passes, so valid 21/21, and nothing else
 moves (`invalid/shared_event_mask` still fails on the closed `pointerEventMask`).
 
+Score: valid 21/21, invalid 13/16, misuse 12/12. Flipped
+`valid/shared_event_mask` to pass, as expected. Merged: same valid as the
+baseline, 25 more rejections. What's left is the three `*_any_modifier_union`.
+
 ## Questions for the user
