@@ -4,15 +4,25 @@
   pass valid/change_active_pointer_grab
   pass valid/check_mask_event
   pass valid/create_window
+  FAIL valid/device_mask_as_selection: rejected
+  Error: The field access attributes.do_not_propagate_mask has type
+         The first variant type does not allow tag(s) `Event, `PointerEvent
   pass valid/do_not_propagate
   pass valid/extend_selection
+  FAIL valid/fold_modifiers: rejected
+  Error: The value all has type ([ `Key ], Mask.union) Mask.mask
+         Type Mask.union is not compatible with type Mask.alone
   pass valid/grab_button
+  pass valid/grab_button_any_modifier_events
   pass valid/grab_from_state
   pass valid/grab_key_any_modifier
   pass valid/grab_key_modifiers
   pass valid/grab_key_no_modifier
   pass valid/grab_numlock_variants
   pass valid/grab_pointer
+  FAIL valid/pointer_mask_as_selection: rejected
+  Error: The value p has type
+         The first variant type does not allow tag(s) `DeviceEvent, `Event
   pass valid/query_pointer
   pass valid/select_input
   pass valid/send_event
@@ -85,7 +95,7 @@
          The second variant type does not allow tag(s) `DeviceEvent
   pass misuse/grab_key_int
   Error: The constant 0x40 has type int but an expression was expected of type
-         ([ `Key ], 'a) Mask.mask
+         Mask.keyMask = ([ `Key ], Mask.alone) Mask.mask
   pass misuse/grab_pointer_button_mask
   Error: The value button1Mask has type ([> `Button ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
@@ -105,6 +115,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 21/21
+  valid: 22/25
   invalid: 16/16
   misuse: 12/12

@@ -9,8 +9,13 @@ back to x11 directly.
 
 1. If an OCaml call with mask arguments type-checks, its C equivalent doesn't
    get a `BadValue`.
-2. If a C call with mask arguments doesn't get a `BadValue`, its OCaml
-   equivalent type-checks.
+2. If a C call gets no `BadValue` for any value its mask expressions can take,
+   judging each mask by the constants it's built from, its OCaml equivalent
+   type-checks.
+
+Rule 2 doesn't count these as failures, though C accepts them:
+`anyModifier ||| anyModifier`, `anyModifier ||| noModifier`, and
+`(mod4Mask ||| button1Mask) &~ button1Mask` passed to a grab.
 
 A third rule applies to cases that the first two can't decide. C sometimes
 accepts a mask only because two constants share a value: `ShiftMask` and
@@ -55,7 +60,7 @@ protocol) and, when rejected, why.
 ## The loop
 
 ```sh
-dune exec -- ./run.sh                # scoreboard
+dune exec -- ./run.sh                # scoreboard, from the source tree: no build first
 dune exec -- ./run.sh valid/xkb_group  # the compiler's full output for one case
 dune test                            # diffs the score and the three checks
 dune promote                         # records them
@@ -98,5 +103,6 @@ ctypes bindings. `conform.t` relies on it.
 - The oracle changes only when the probe says so. A new stand-in starts in
   `probe/probe.c`, `oracle/probe.ml` and `oracle/mask.ml`, with `probe.t`
   showing that the server agrees, before any case uses it.
-- `test/spec.t`, `test/probe.t` and `test/conform.t` must stay as recorded.
-  Only `test/score.t` moves.
+- `test/probe.t` and `test/conform.t` must stay as recorded. `test/spec.t` may
+  change in its totals when cases are added, never with a `FAIL` line.
+  `test/score.t` moves freely.
