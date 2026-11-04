@@ -139,4 +139,16 @@ Expected: no flip, one tag fewer. Merged if so, as a tie with simpler types.
 Score: valid 21/21, invalid 16/16, misuse 12/12. No flip. Merged, a tie with
 simpler types. The programs outside the spec answer as in experiment 4.
 
+### 06: calls that take any subset of their field
+
+Branch `exp/06-open-calls`. Calls stop naming the closed field types:
+`select_input : ([< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ],
+'c) mask -> unit`, `grab_key : ([ `Key ], 'c) mask -> unit`. So a
+`pointerEventMask` goes to `select_input` directly, and the `union` result of a
+fold goes to `grab_key`.
+
+Expected: no flip on the spec, and experiment 4's three rule 2 gaps (the fold and
+the two narrower masks) close. The types are longer, so by the merge rule a tie
+doesn't get it into `main` on its own.
+
 ## Questions for the user
