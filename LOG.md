@@ -78,4 +78,21 @@ experiment, measured again on the current spec.
 Expected: the three `*_any_modifier_union` cases pass, `valid/binding_table`
 fails: valid 20/21, invalid 16/16, misuse 12/12.
 
+Score: valid 20/21, invalid 16/16, misuse 12/12. Flipped the three
+`*_any_modifier_union` to pass and `valid/binding_table` to fail, as expected.
+Not merged: it trades a `valid` case for rejections.
+
+**Result: no design with `( ||| ) : 'a mask -> 'a mask -> 'a mask` passes both
+`valid/binding_table` and `invalid/grab_key_any_modifier_union`.** The table
+puts `anyModifier`, `mod4Mask` and `mod4Mask ||| shiftMask` in one list, so
+their types must unify. With one variable shared by the operands and the result,
+unifying `anyModifier`'s type with the result is unifying it with the operands,
+which is what typing `anyModifier ||| shiftMask` asks. So the operands of `|||`
+and its result must have different types: a constant must fit both, and
+`anyModifier` only the result. That needs a variable in the type of the
+constants that the row of tags can't provide, because a row can't be extended
+from a variable (no `[ 'a | `Any ]`). That is a second dimension, whichever way
+it's written. It also rules out the idea "a separate type for AnyModifier": the
+table needs one type for all its entries.
+
 ## Questions for the user
