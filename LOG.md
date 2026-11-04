@@ -46,4 +46,15 @@ measures the starting point on the current spec.
 Expected: every family mix-up rejected. Fails `valid/shared_event_mask` (value
 restriction), and the three `*_any_modifier_union` cases.
 
+Score: valid 20/21, invalid 13/16, misuse 12/12. As expected. Fails
+`valid/shared_event_mask` (`m` stays weakly polymorphic, so `select_input` fixes
+it to the whole of `eventMask`) and the three `*_any_modifier_union` cases. Not
+merged: it fails a `valid` case that `main` passes, and fewer `valid` failures
+beat more rejections.
+
+Instrument note: `dune exec -- ./run.sh` runs `_build/default/run.sh` and only
+builds that one file, so after an edit it scores a stale `mask.{mli,ml}`. The
+first run here scored the int baseline. Run `dune build ./mask.ml ./mask.mli`
+first. `dune test` isn't affected, its deps are declared.
+
 ## Questions for the user
