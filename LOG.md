@@ -180,4 +180,13 @@ that `main` allows is refused too (`no intersection`). Experiment 6 can't be
 built on it. Not merged: one tag fewer doesn't make up for losing that, and x11's
 tags are group tags, so it's further from what users have.
 
+### 08: private int instead of abstract
+
+Branch `exp/08-private`. `type (+'a, +'c) mask = private int`, from the list of
+ideas not tried. A mask reads as an int with `(m :> int)`, as C code does, and an
+int still can't become a mask.
+
+Expected: no flip, since no case converts a mask to an int. Checks that the
+phantom parameters still separate types through a private abbreviation.
+
 ## Questions for the user
