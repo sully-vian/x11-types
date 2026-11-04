@@ -109,7 +109,7 @@ val anyModifier : ([> `Key ], alone) mask
 val grab_key : ([ `Key ], 'c) mask -> unit
 (** XGrabKey's modifiers *)
 
-val grab_button : ([ `Key ], 'c) mask -> ([< pointerEventFlags ], 'c) mask -> unit
+val grab_button : ([ `Key ], 'c) mask -> ([< pointerEventFlags ], 'd) mask -> unit
 (** XGrabButton's modifiers and event mask *)
 
 val ungrab_key : ([ `Key ], 'c) mask -> unit
