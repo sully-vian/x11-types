@@ -1,10 +1,12 @@
-type +'a mask = int
+type (+'a, +'c) mask = int
+type union
+type alone
 
-type keyMask = [ `Key | `Any ] mask
-type stateMask = [ `Key | `Button ] mask
-type eventMask = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
-type pointerEventMask = [ `PointerEvent | `PointerDeviceEvent ] mask
-type deviceEventMask = [ `DeviceEvent | `PointerDeviceEvent ] mask
+type keyMask = ([ `Key | `Any ], alone) mask
+type stateMask = ([ `Key | `Button ], union) mask
+type eventMask = ([ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], union) mask
+type pointerEventMask = ([ `PointerEvent | `PointerDeviceEvent ], union) mask
+type deviceEventMask = ([ `DeviceEvent | `PointerDeviceEvent ], union) mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0

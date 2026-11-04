@@ -1,72 +1,74 @@
-(* x11's design, covariant: the relaxed value restriction generalizes [let m = a ||| b] *)
+(* Tags for the flags a mask may hold; a second parameter for whether it can be or-ed *)
 
-type +'a mask
+type (+'a, +'c) mask
+type union
+type alone
 
-type keyMask = [ `Key | `Any ] mask
-type stateMask = [ `Key | `Button ] mask
-type eventMask = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
-type pointerEventMask = [ `PointerEvent | `PointerDeviceEvent ] mask
-type deviceEventMask = [ `DeviceEvent | `PointerDeviceEvent ] mask
+type keyMask = ([ `Key | `Any ], alone) mask
+type stateMask = ([ `Key | `Button ], union) mask
+type eventMask = ([ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], union) mask
+type pointerEventMask = ([ `PointerEvent | `PointerDeviceEvent ], union) mask
+type deviceEventMask = ([ `DeviceEvent | `PointerDeviceEvent ], union) mask
 
-val ( ||| ) : 'a mask -> 'a mask -> 'a mask
+val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
 
-val ( &&& ) : 'a mask -> 'a mask -> bool
+val ( &&& ) : ('a, 'c) mask -> ('a, 'd) mask -> bool
 (** [m &&& flags]: [m] holds at least one of [flags], like C's [m & flags] *)
 
-val ( &~ ) : 'a mask -> 'a mask -> 'a mask
+val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
 (** [m &~ flags]: [m] without [flags], like C's [m & ~flags] *)
 
-val keys : [< `Key | `Button | `Any ] mask -> [> `Key ] mask
+val keys : ([< `Key | `Button | `Any ], 'c) mask -> ([> `Key ], 'd) mask
 (** The modifiers of a mask, without its buttons and the XKB group *)
 
 (** {1 Event masks} *)
 
-val noEventMask : [< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
-val keyPressMask : [> `DeviceEvent ] mask
-val keyReleaseMask : [> `DeviceEvent ] mask
-val buttonPressMask : [> `PointerDeviceEvent ] mask
-val buttonReleaseMask : [> `PointerDeviceEvent ] mask
-val enterWindowMask : [> `PointerEvent ] mask
-val leaveWindowMask : [> `PointerEvent ] mask
-val pointerMotionMask : [> `PointerDeviceEvent ] mask
-val pointerMotionHintMask : [> `PointerEvent ] mask
-val button1MotionMask : [> `PointerDeviceEvent ] mask
-val button2MotionMask : [> `PointerDeviceEvent ] mask
-val button3MotionMask : [> `PointerDeviceEvent ] mask
-val button4MotionMask : [> `PointerDeviceEvent ] mask
-val button5MotionMask : [> `PointerDeviceEvent ] mask
-val buttonMotionMask : [> `PointerDeviceEvent ] mask
-val keymapStateMask : [> `PointerEvent ] mask
-val exposureMask : [> `Event ] mask
-val visibilityChangeMask : [> `Event ] mask
-val structureNotifyMask : [> `Event ] mask
-val resizeRedirectMask : [> `Event ] mask
-val substructureNotifyMask : [> `Event ] mask
-val substructureRedirectMask : [> `Event ] mask
-val focusChangeMask : [> `Event ] mask
-val propertyChangeMask : [> `Event ] mask
-val colormapChangeMask : [> `Event ] mask
-val ownerGrabButtonMask : [> `Event ] mask
+val noEventMask : ([< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], 'c) mask
+val keyPressMask : ([> `DeviceEvent ], 'c) mask
+val keyReleaseMask : ([> `DeviceEvent ], 'c) mask
+val buttonPressMask : ([> `PointerDeviceEvent ], 'c) mask
+val buttonReleaseMask : ([> `PointerDeviceEvent ], 'c) mask
+val enterWindowMask : ([> `PointerEvent ], 'c) mask
+val leaveWindowMask : ([> `PointerEvent ], 'c) mask
+val pointerMotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val pointerMotionHintMask : ([> `PointerEvent ], 'c) mask
+val button1MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button2MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button3MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button4MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button5MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val buttonMotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val keymapStateMask : ([> `PointerEvent ], 'c) mask
+val exposureMask : ([> `Event ], 'c) mask
+val visibilityChangeMask : ([> `Event ], 'c) mask
+val structureNotifyMask : ([> `Event ], 'c) mask
+val resizeRedirectMask : ([> `Event ], 'c) mask
+val substructureNotifyMask : ([> `Event ], 'c) mask
+val substructureRedirectMask : ([> `Event ], 'c) mask
+val focusChangeMask : ([> `Event ], 'c) mask
+val propertyChangeMask : ([> `Event ], 'c) mask
+val colormapChangeMask : ([> `Event ], 'c) mask
+val ownerGrabButtonMask : ([> `Event ], 'c) mask
 
 (** {1 Key and button masks} *)
 
-val noModifier : [> `Key ] mask
+val noModifier : ([> `Key ], 'c) mask
 (** No modifier: C writes 0 *)
 
-val shiftMask : [> `Key ] mask
-val lockMask : [> `Key ] mask
-val controlMask : [> `Key ] mask
-val mod1Mask : [> `Key ] mask
-val mod2Mask : [> `Key ] mask
-val mod3Mask : [> `Key ] mask
-val mod4Mask : [> `Key ] mask
-val mod5Mask : [> `Key ] mask
-val button1Mask : [> `Button ] mask
-val button2Mask : [> `Button ] mask
-val button3Mask : [> `Button ] mask
-val button4Mask : [> `Button ] mask
-val button5Mask : [> `Button ] mask
-val anyModifier : [> `Any ] mask
+val shiftMask : ([> `Key ], 'c) mask
+val lockMask : ([> `Key ], 'c) mask
+val controlMask : ([> `Key ], 'c) mask
+val mod1Mask : ([> `Key ], 'c) mask
+val mod2Mask : ([> `Key ], 'c) mask
+val mod3Mask : ([> `Key ], 'c) mask
+val mod4Mask : ([> `Key ], 'c) mask
+val mod5Mask : ([> `Key ], 'c) mask
+val button1Mask : ([> `Button ], 'c) mask
+val button2Mask : ([> `Button ], 'c) mask
+val button3Mask : ([> `Button ], 'c) mask
+val button4Mask : ([> `Button ], 'c) mask
+val button5Mask : ([> `Button ], 'c) mask
+val anyModifier : ([> `Any ], alone) mask
 
 (** {1 Stand-ins for the X calls}
 
