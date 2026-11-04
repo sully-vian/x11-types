@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Usage: ./run.sh          scoreboard of mask.{mli,ml} against spec/
-#        ./run.sh --spec   checks the spec against oracle/mask.ml, i.e. C
-#        ./run.sh CASE     the full output of one case, e.g. valid/xkb_group
+# Usage: dune exec -- ./run.sh          scoreboard of mask.{mli,ml} against spec/
+#        dune exec -- ./run.sh --spec   checks the spec against oracle/mask.ml, i.e. C
+#        dune exec -- ./run.sh CASE     the full output of one case, e.g. valid/xkb_group
 #
 # The scoreboard: spec/valid cases must type-check, then run without an
 # exception. spec/invalid and spec/misuse cases must be rejected by the type
@@ -13,6 +13,10 @@
 # without a BadValue, invalid ones must raise it.
 set -u
 root=$(cd "$(dirname "$0")" && pwd)
+# dune exec runs _build/default's copy of this script, and doesn't refresh the
+# copies next to it: read the source tree instead. Cram tests run in a sandbox
+# of their own, holding their declared deps, and stay there.
+root=${root%/_build/default}
 mode=score
 module=$root
 case ${1:-} in
