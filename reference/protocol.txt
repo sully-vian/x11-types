@@ -1,0 +1,712 @@
+X Window System Protocol, excerpts about mask arguments.
+
+Source: https://gitlab.freedesktop.org/xorg/proto/xorgproto, specs/xproto,
+master at 6d3907b6d5dc4aa7d7ee6ee5d7d8714e7466630b:
+  sect1-9.xml, the requests, in DocBook: converted to plain text here;
+  encoding.xml, the bit encodings, already plain text.
+Copyright the X Consortium and The Open Group; see the spec for its license.
+
+========================================================================
+Common Types (sect1-9.xml lines 441-589): what the sets hold
+========================================================================
+
+EVENT
+{ KeyPress,
+KeyRelease,
+OwnerGrabButton,
+ButtonPress,
+ButtonRelease,
+EnterWindow,
+LeaveWindow,
+PointerMotion,
+PointerMotionHint,
+Button1Motion,
+Button2Motion,
+Button3Motion,
+Button4Motion,
+Button5Motion,
+ButtonMotion,
+Exposure,
+VisibilityChange,
+StructureNotify,
+ResizeRedirect,
+SubstructureNotify,
+SubstructureRedirect,
+FocusChange,
+PropertyChange,
+ColormapChange,
+KeymapState }
+
+POINTEREVENT
+{ ButtonPress,
+ButtonRelease,
+EnterWindow,
+LeaveWindow,
+PointerMotion,
+PointerMotionHint,
+Button1Motion,
+Button2Motion,
+Button3Motion,
+Button4Motion,
+Button5Motion,
+ButtonMotion,
+KeymapState }
+
+DEVICEEVENT
+{ KeyPress,
+KeyRelease,
+ButtonPress,
+ButtonRelease,
+PointerMotion,
+Button1Motion,
+Button2Motion,
+Button3Motion,
+Button4Motion,
+Button5Motion,
+ButtonMotion }
+
+KEYSYM 32-bit value (top three bits guaranteed to be zero)
+
+KEYCODE CARD8
+
+BUTTON CARD8
+
+KEYMASK
+{ Shift,
+Lock,
+Control,
+Mod1,
+Mod2,
+Mod3,
+Mod4,
+Mod5 }
+
+BUTMASK
+{ Button1,
+Button2,
+Button3,
+Button4,
+Button5 }
+
+KEYBUTMASK KEYMASK or BUTMASK
+
+STRING8 LISTofCARD8
+
+STRING16 LISTofCHAR2B
+
+CHAR2B [byte1, byte2: CARD8]
+
+POINT [x, y: INT16]
+
+RECTANGLE
+[x, y: INT16,
+
+width, height: CARD16]
+
+ARC
+[x, y: INT16,
+
+width, height: CARD16,
+
+angle1, angle2: INT16]
+
+HOST
+
+[family:
+{ Internet,
+InternetV6,
+ServerInterpreted,
+DECnet,
+Chaos }
+
+address: LISTofBYTE]
+
+========================================================================
+Encoding (encoding.xml lines 440-499): the bits of each set
+========================================================================
+
+Bits marked "unused but must be zero" are the ones that get a BadValue.
+
+SETofEVENT
+     #x00000001     KeyPress
+     #x00000002     KeyRelease
+     #x00000004     ButtonPress
+     #x00000008     ButtonRelease
+     #x00000010     EnterWindow
+     #x00000020     LeaveWindow
+     #x00000040     PointerMotion
+     #x00000080     PointerMotionHint
+     #x00000100     Button1Motion
+     #x00000200     Button2Motion
+     #x00000400     Button3Motion
+     #x00000800     Button4Motion
+     #x00001000     Button5Motion
+     #x00002000     ButtonMotion
+     #x00004000     KeymapState
+     #x00008000     Exposure
+     #x00010000     VisibilityChange
+     #x00020000     StructureNotify
+     #x00040000     ResizeRedirect
+     #x00080000     SubstructureNotify
+     #x00100000     SubstructureRedirect
+     #x00200000     FocusChange
+     #x00400000     PropertyChange
+     #x00800000     ColormapChange
+     #x01000000     OwnerGrabButton
+     #xFE000000     unused but must be zero
+
+SETofPOINTEREVENT
+     encodings are the same as for SETofEVENT, except with
+     #xFFFF8003     unused but must be zero
+
+SETofDEVICEEVENT
+     encodings are the same as for SETofEVENT, except with
+     #xFFFFC0B0     unused but must be zero
+
+KEYSYM: CARD32
+KEYCODE: CARD8
+BUTTON: CARD8
+
+SETofKEYBUTMASK
+     #x0001     Shift
+     #x0002     Lock
+     #x0004     Control
+     #x0008     Mod1
+     #x0010     Mod2
+     #x0020     Mod3
+     #x0040     Mod4
+     #x0080     Mod5
+     #x0100     Button1
+     #x0200     Button2
+     #x0400     Button3
+     #x0800     Button4
+     #x1000     Button5
+     #xE000     unused but must be zero
+
+SETofKEYMASK
+     encodings are the same as for SETofKEYBUTMASK, except with
+     #xFF00          unused but must be zero
+STRING8: LISTofCARD8
+
+========================================================================
+ChangeWindowAttributes (sect1-9.xml lines 2352-2472)
+========================================================================
+
+ChangeWindowAttributes
+
+window: WINDOW
+
+value-mask: BITMASK
+
+value-list: LISTofVALUE
+
+Errors:
+Access,
+Colormap,
+Cursor,
+Match,
+Pixmap,
+Value,
+Window
+
+The value-mask and value-list specify which attributes are to be changed.
+The values and restrictions are the same as for
+CreateWindow.
+
+Setting a new background, whether by background-pixmap or
+background-pixel, overrides any previous background.
+Setting a new border, whether by border-pixel or border-pixmap,
+overrides any previous border.
+
+Changing the background does not cause the window contents to be changed.
+Setting the border or changing the background such that the
+border tile origin changes causes the border to be repainted.
+Changing the background of a root window to
+None
+or
+ParentRelative
+restores the default background pixmap.
+Changing the border of a root window to
+CopyFromParent
+restores the default border pixmap.
+
+Changing the win-gravity does not affect the current position of the
+window.
+
+Changing the backing-store of an obscured window to
+WhenMapped
+or
+Always
+or changing the backing-planes, backing-pixel, or save-under of
+a mapped window may have no immediate effect.
+
+Multiple clients can select input on the same window;
+their event-masks are disjoint.
+When an event is generated,
+it will be reported to all interested clients.
+However, only one client at a time can select for
+SubstructureRedirect,
+only one client at a time can select for
+ResizeRedirect,
+and only one client at a time can select for
+ButtonPress.
+An attempt to violate these restrictions results in an
+Access
+error.
+
+There is only one do-not-propagate-mask for a window, not one per
+client.
+
+Changing the colormap of a window (by defining a new map, not by
+changing the contents of the existing map) generates a
+ColormapNotify
+event.
+Changing the colormap of a visible window might have no immediate effect
+on the screen (see
+InstallColormap
+request).
+
+Changing the cursor of a root window to
+None
+restores the default cursor.
+
+The order in which attributes are verified and altered is server-dependent.
+If an error is generated,
+a subset of the attributes may have been altered.
+
+========================================================================
+GrabPointer (sect1-9.xml lines 4405-4585)
+========================================================================
+
+GrabPointer
+
+grab-window: WINDOW
+
+owner-events: BOOL
+
+event-mask: SETofPOINTEREVENT
+
+pointer-mode, keyboard-mode:
+{ Synchronous,
+Asynchronous}
+
+confine-to: WINDOW or
+None
+
+cursor: CURSOR or
+None
+
+time: TIMESTAMP or
+CurrentTime
+
+▶
+
+status:
+{ Success,
+AlreadyGrabbed,
+Frozen,
+InvalidTime,
+NotViewable}
+
+Errors:
+Cursor,
+Value,
+Window
+
+This request actively grabs control of the pointer.
+Further pointer events are only reported to the grabbing client.
+The request overrides any active pointer grab by this client.
+
+If owner-events is
+False,
+all generated pointer events are reported with respect to grab-window
+and are only reported if selected by event-mask.
+If owner-events is
+True
+and a generated pointer event would normally be reported to this client,
+it is reported normally.
+Otherwise, the event is reported with respect to the grab-window and is
+only reported if selected by event-mask.
+For either value of owner-events,
+unreported events are simply discarded.
+
+If pointer-mode is
+Asynchronous,
+pointer event processing continues normally.
+If the pointer is currently frozen by this client,
+then processing of pointer events is resumed.
+If pointer-mode is
+Synchronous,
+the state of the pointer (as seen by means of the protocol) appears to freeze,
+and no further pointer events are generated by the server until the
+grabbing client issues a releasing
+AllowEvents
+request or until the pointer grab is released.
+Actual pointer changes are not lost while the pointer is frozen.
+They are simply queued for later processing.
+
+If keyboard-mode is
+Asynchronous,
+keyboard event processing is unaffected by activation of the grab.
+If keyboard-mode is
+Synchronous,
+the state of the keyboard (as seen by means of the protocol) appears to freeze,
+and no further keyboard events are generated by the server until the grabbing
+client issues a releasing
+AllowEvents
+request or until the pointer grab is released.
+Actual keyboard changes are not lost while the keyboard is frozen.
+They are simply queued for later processing.
+
+If a cursor is specified,
+then it is displayed regardless of what window the pointer is in.
+If no cursor is specified,
+then when the pointer is in grab-window or one of its subwindows,
+the normal cursor for that window is displayed.
+Otherwise, the cursor for grab-window is displayed.
+
+If a confine-to window is specified,
+then the pointer will be restricted to stay contained in that window.
+The confine-to window need have no relationship to the grab-window.
+If the pointer is not initially in the confine-to window,
+then it is warped automatically to the closest edge
+(and enter/leave events are generated normally) just before the grab activates.
+If the confine-to window is subsequently reconfigured,
+the pointer will be warped automatically as necessary to
+keep it contained in the window.
+
+This request generates
+EnterNotify
+and
+LeaveNotify
+events.
+
+The request fails with status
+AlreadyGrabbed
+if the pointer is actively grabbed by some other client.
+The request fails with status
+Frozen
+if the pointer is frozen by an active grab of another client.
+The request fails with status
+NotViewable
+if grab-window or confine-to window is not viewable
+or if the confine-to window lies completely outside the boundaries
+of the root window.
+The request fails with status
+InvalidTime
+if the specified time is earlier than the last-pointer-grab time or later than
+the current server time.
+Otherwise, the last-pointer-grab time is set to the specified time, with
+CurrentTime
+replaced by the current server time.
+
+========================================================================
+ChangeActivePointerGrab (sect1-9.xml lines 4827-4880)
+========================================================================
+
+ChangeActivePointerGrab
+
+event-mask: SETofPOINTEREVENT
+
+cursor: CURSOR or
+None
+
+time: TIMESTAMP or
+CurrentTime
+
+Errors:
+Cursor,
+Value
+
+This request changes the specified dynamic parameters if the pointer is
+actively grabbed by the client and the specified time is no earlier than the
+last-pointer-grab time and no later than the current server time.
+The interpretation of event-mask and cursor are the same as in
+GrabPointer.
+This request has no effect on the parameters of any passive grabs established
+with
+GrabButton.
+
+========================================================================
+GrabButton (sect1-9.xml lines 4634-4771)
+========================================================================
+
+GrabButton
+
+modifiers: SETofKEYMASK or
+AnyModifier
+
+button: BUTTON or
+AnyButton
+
+grab-window: WINDOW
+
+owner-events: BOOL
+
+event-mask: SETofPOINTEREVENT
+
+pointer-mode, keyboard-mode:
+{ Synchronous,
+Asynchronous}
+
+confine-to: WINDOW or
+None
+
+cursor: CURSOR or
+None
+
+Errors:
+Access,
+Cursor,
+Value,
+Window
+
+This request establishes a passive grab.
+
+In the future,
+the pointer is actively grabbed as described in
+GrabPointer,
+the last-pointer-grab time is set to the time at which the button was
+pressed (as transmitted in the
+ButtonPress
+event), and the
+ButtonPress
+event is reported if all of the following conditions are true:
+
+The pointer is not grabbed and the specified button is logically pressed
+when the specified modifier keys are logically down,
+and no other buttons or modifier keys are logically down.
+
+The grab-window contains the pointer.
+
+The confine-to window (if any) is viewable.
+
+A passive grab on the same button/key combination does not exist
+on any ancestor of grab-window.
+
+The interpretation of the remaining arguments is the same as for
+GrabPointer.
+The active grab is terminated automatically when
+the logical state of the pointer has all buttons released,
+independent of the logical state of modifier keys.
+Note that the logical state of a device (as seen by means of the protocol)
+may lag the physical state if device event processing is frozen.
+
+This request overrides all previous passive grabs by the same client on
+the same button/key combinations on the same window.
+A modifier of
+AnyModifier
+is equivalent to issuing the request for all possible modifier combinations
+(including the combination of no modifiers).
+It is not required that all specified modifiers have currently assigned
+keycodes.
+A button of
+AnyButton
+is equivalent to issuing the request for all possible buttons.
+Otherwise, it is not required that the button specified currently be assigned
+to a physical button.
+
+An
+Access
+error is generated if some other client has already issued a
+GrabButton
+request with the same button/key combination on the same window.
+When using
+AnyModifier
+or
+AnyButton,
+the request fails completely (no grabs are established), and an
+Access
+error is generated if there is a conflicting grab for any combination.
+The request has no effect on an active grab.
+
+========================================================================
+GrabKey (sect1-9.xml lines 5071-5192)
+========================================================================
+
+GrabKey
+
+key: KEYCODE or
+AnyKey
+
+modifiers: SETofKEYMASK or
+AnyModifier
+
+grab-window: WINDOW
+
+owner-events: BOOL
+
+pointer-mode, keyboard-mode:
+{ Synchronous,
+Asynchronous}
+
+Errors:
+Access,
+Value,
+Window
+
+This request establishes a passive grab on the keyboard.
+
+In the future,
+the keyboard is actively grabbed as described in
+GrabKeyboard,
+the last-keyboard-grab time is set to the time at which the key was pressed
+(as transmitted in the
+KeyPress
+event), and the
+KeyPress
+event is reported if all of the following conditions are true:
+
+The keyboard is not grabbed and the specified key
+(which can itself be a modifier key) is logically pressed
+when the specified modifier keys are logically down,
+and no other modifier keys are logically down.
+
+Either the grab-window is an ancestor of (or is) the focus window,
+or the grab-window is a descendent of the focus window and contains the
+pointer.
+
+A passive grab on the same key combination does not exist
+on any ancestor of grab-window.
+
+The interpretation of the remaining arguments is the same as for
+GrabKeyboard.
+The active grab is terminated automatically when the logical state
+of the keyboard has the specified key released,
+independent of the logical state of modifier keys.
+Note that the logical state of a device (as seen by means of the protocol)
+may lag the physical state if device event processing is frozen.
+
+This request overrides all previous passive grabs by the same client
+on the same key combinations on the same window.
+A modifier of
+AnyModifier
+is equivalent to issuing the request for all possible modifier combinations
+(including the combination of no modifiers).
+It is not required that all modifiers specified have
+currently assigned keycodes.
+A key of
+AnyKey
+is equivalent to issuing the request for all possible keycodes.
+Otherwise, the key must be in the range specified by min-keycode
+and max-keycode in the connection setup (or a
+Value
+error results).
+
+An
+Access
+error is generated if some other client has issued a
+GrabKey
+with the same key combination on the same window.
+When using
+AnyModifier
+or
+AnyKey,
+the request fails completely (no grabs are established),
+and an
+Access
+error is generated if there is a conflicting grab for any combination.
+
+========================================================================
+Request encodings (encoding.xml): the width of each mask field
+========================================================================
+
+The grabs' event-mask and modifiers are 2 bytes wide: Xlib truncates the
+unsigned int it is given to fit (see xlib.c).
+
+-- encoding.xml lines 1006-1015
+ChangeWindowAttributes
+     1     2                               opcode
+     1                                     unused
+     2     3+n                             request length
+     4     WINDOW                          window
+     4     BITMASK                         value-mask (has n bits set to 1)
+          encodings are the same as for CreateWindow
+     4n     LISTofVALUE                    value-list
+          encodings are the same as for CreateWindow
+
+-- encoding.xml lines 1337-1367
+GrabPointer
+     1     26                              opcode
+     1     BOOL                            owner-events
+     2     6                               request length
+     4     WINDOW                          grab-window
+     2     SETofPOINTEREVENT               event-mask
+     1                                     pointer-mode
+          0     Synchronous
+          1     Asynchronous
+     1                                     keyboard-mode
+          0     Synchronous
+          1     Asynchronous
+     4     WINDOW                          confine-to
+          0     None
+     4     CURSOR                          cursor
+          0     None
+     4     TIMESTAMP                       time
+          0     CurrentTime
+
+▶
+     1     1                               Reply
+     1                                     status
+          0     Success
+          1     AlreadyGrabbed
+          2     InvalidTime
+          3     NotViewable
+          4     Frozen
+     2     CARD16                          sequence number
+     4     0                               reply length
+     24                                    unused
+
+-- encoding.xml lines 1375-1396
+GrabButton
+     1     28                              opcode
+     1     BOOL                            owner-events
+     2     6                               request length
+     4     WINDOW                          grab-window
+     2     SETofPOINTEREVENT               event-mask
+     1                                     pointer-mode
+          0     Synchronous
+          1     Asynchronous
+     1                                     keyboard-mode
+          0     Synchronous
+          1     Asynchronous
+     4     WINDOW                          confine-to
+          0     None
+     4     CURSOR                          cursor
+          0     None
+     1     BUTTON                          button
+          0     AnyButton
+     1                                     unused
+     2     SETofKEYMASK                    modifiers
+          #x8000                           AnyModifier
+
+-- encoding.xml lines 1407-1417
+ChangeActivePointerGrab
+     1     30                              opcode
+     1                                     unused
+     2     4                               request length
+     4     CURSOR                          cursor
+          0     None
+     4     TIMESTAMP                       time
+          0     CurrentTime
+     2     SETofPOINTEREVENT               event-mask
+     2                                     unused
+
+-- encoding.xml lines 1452-1468
+GrabKey
+     1     33                              opcode
+     1     BOOL                            owner-events
+     2     4                               request length
+     4     WINDOW                          grab-window
+     2     SETofKEYMASK                    modifiers
+          #x8000     AnyModifier
+     1     KEYCODE                         key
+          0     AnyKey
+     1                                     pointer-mode
+          0     Synchronous
+          1     Asynchronous
+     1                                     keyboard-mode
+          0     Synchronous
+          1     Asynchronous
+     3                                     unused
+

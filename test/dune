@@ -1,0 +1,16 @@
+; score.t records how mask.{mli,ml} does against the spec, spec.t that every
+; case sits in the directory its C equivalent puts it in, probe.t that the
+; oracle agrees with a real X server (it needs Xvfb, a C compiler and Xlib's
+; headers), and conform.t that mask.ml computes what the oracle does. When a change flips
+; cases, `dune test` shows the diff and `dune promote` records it.
+
+(cram
+ (deps
+  %{project_root}/run.sh
+  %{project_root}/mask.mli
+  %{project_root}/mask.ml
+  %{project_root}/oracle/mask.ml
+  %{project_root}/oracle/probe.ml
+  %{project_root}/oracle/semantics.ml
+  (source_tree %{project_root}/probe)
+  (source_tree %{project_root}/spec)))
