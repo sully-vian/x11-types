@@ -1,6 +1,6 @@
 (* Tags for the flags a mask may hold; a second parameter for whether it can be or-ed *)
 
-type (+'a, +'c) mask
+type (+'a, +'c) mask = private int
 type union
 type alone
 
