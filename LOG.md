@@ -195,6 +195,19 @@ types once they're declared covariant. Not merged: a tie, and not simpler. It
 stays an option for the port if users need `(m :> int)`, without changing anything
 else. Masks are already `int`s for the ctypes bindings, inside the library.
 
+### 06, continued: grab_button's masks don't share `'c`
+
+Same branch, after main's new cases were merged into it. The version first
+recorded is 96d6022. The user found that its `grab_button` used one `'c` for both
+masks, so `let events : pointerEventMask = ... in grab_button anyModifier events`
+was refused, while `main` accepted it and so does C. That program is now
+`valid/grab_button_any_modifier_events`. Reproduced on the branch: valid 24/25,
+`Type Mask.union is not compatible with type Mask.alone`.
+
+The idea: give the event mask its own variable, `'d`.
+
+Expected: that case flips to pass, for 25/16/12.
+
 ## Questions for the user
 
 1. **Merge `exp/06-open-calls`?** It ties `main` on the score with longer types,
