@@ -160,4 +160,16 @@ Not merged: it ties `main` with longer types, so the merge rule keeps
 experiment 5. But it respects rule 2 on programs the spec has no case for: see
 "Questions for the user".
 
+### 07: tags name the fields, not the groups of flags
+
+Branch `exp/07-field-tags`. Turning the rows around: a constant lists the fields
+it is valid in, `keyPressMask : ([< `Event | `Device ], 'c) mask`, and a call
+demands its own, `grab_pointer : ([> `Pointer ], 'c) mask`. A union intersects the
+fields of its operands, and the group tags go: 5 tags instead of 6, one per
+protocol set, and the constants read like the protocol's tables.
+
+Expected: no flip. The error should read `does not allow tag(s) `Pointer`, naming
+the field. Risk: `[`Device]` can't reach `[> `Event]`, so a narrower mask can't
+go to `select_input`, even with a coercion.
+
 ## Questions for the user
