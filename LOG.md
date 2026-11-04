@@ -201,8 +201,10 @@ else. Masks are already `int`s for the ctypes bindings, inside the library.
    so the merge rule keeps it out, but it accepts programs that rule 2 says must
    type-check and that `main` refuses: `grab_key (List.fold_left ( ||| ) noModifier
    [...])` and `select_input (p : pointerEventMask)`. No spec case covers them.
-   Recommendation: merge it. `git merge exp/06-open-calls`, whose only conflicts
-   would be in `LOG.md`. Rule 1 and rule 3 don't move, and neither does the score.
+   Recommendation: merge it. `git merge exp/06-open-calls` conflicts in `LOG.md` and
+   in `mask.mli`, where `main` has since documented the types: keep `main`'s log and
+   comments, and take the branch's signatures. No spec case flips on the branch, and
+   the programs outside the spec that should be rejected still are.
 2. **Can the spec grow?** `CLAUDE.md` allows adding cases, but says that
    `test/spec.t` must still pass and stay as recorded, and `spec.t` records the
    totals (`valid: 21/21`). So any new case breaks it. I added none, and kept the
