@@ -1,8 +1,10 @@
-type keyMask = int
-type stateMask = int
-type eventMask = int
-type pointerEventMask = int
-type deviceEventMask = int
+type +'a mask = int
+
+type keyMask = [ `Key | `Any ] mask
+type stateMask = [ `Key | `Button ] mask
+type eventMask = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
+type pointerEventMask = [ `PointerEvent | `PointerDeviceEvent ] mask
+type deviceEventMask = [ `DeviceEvent | `PointerDeviceEvent ] mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
