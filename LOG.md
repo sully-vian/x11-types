@@ -172,4 +172,12 @@ Expected: no flip. The error should read `does not allow tag(s) `Pointer`, namin
 the field. Risk: `[`Device]` can't reach `[> `Event]`, so a narrower mask can't
 go to `select_input`, even with a coercion.
 
+Score: valid 21/21, invalid 16/16, misuse 12/12. No flip. The errors do name the
+field (`does not allow tag(s) `Pointer`), though each constant's type is longer.
+The risk was real, and it's a result: fields don't nest under this encoding, so
+`select_input` can never take a `pointerEventMask`, and the `(p :> eventMask)`
+that `main` allows is refused too (`no intersection`). Experiment 6 can't be
+built on it. Not merged: one tag fewer doesn't make up for losing that, and x11's
+tags are group tags, so it's further from what users have.
+
 ## Questions for the user
