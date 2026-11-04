@@ -136,4 +136,7 @@ Branch `exp/05-no-any-tag`. `'c` already tells AnyModifier from the rest, so
 
 Expected: no flip, one tag fewer. Merged if so, as a tie with simpler types.
 
+Score: valid 21/21, invalid 16/16, misuse 12/12. No flip. Merged, a tie with
+simpler types. The programs outside the spec answer as in experiment 4.
+
 ## Questions for the user
