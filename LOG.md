@@ -196,3 +196,80 @@ stays an option for the port if users need `(m :> int)`, without changing anythi
 else. Masks are already `int`s for the ctypes bindings, inside the library.
 
 ## Questions for the user
+
+1. **Merge `exp/06-open-calls`?** It ties `main` on the score with longer types,
+   so the merge rule keeps it out, but it accepts programs that rule 2 says must
+   type-check and that `main` refuses: `grab_key (List.fold_left ( ||| ) noModifier
+   [...])` and `select_input (p : pointerEventMask)`. No spec case covers them.
+   Recommendation: merge it. `git merge exp/06-open-calls`, whose only conflicts
+   would be in `LOG.md`. Rule 1 and rule 3 don't move, and neither does the score.
+2. **Can the spec grow?** `CLAUDE.md` allows adding cases, but says that
+   `test/spec.t` must still pass and stay as recorded, and `spec.t` records the
+   totals (`valid: 21/21`). So any new case breaks it. I added none, and kept the
+   programs outside the spec in this log. With permission to update those totals,
+   the fold and the narrower masks would become `valid` cases, and experiment 6
+   would win on the score.
+3. **Should rule 2 be read as "for the programs of the spec"?** As written it can't
+   hold for any type system of this kind: see "What no design can do" below. Nothing
+   here depends on the answer, but the README could say so.
+
+## Summary
+
+**The design** (`main`, from experiments 2, 4 and 5). `type (+'a, +'c) mask`, an
+`int` at runtime. `'a` holds x11's group tags, without `` `Any ``: constants open
+(`[> `Key ]`), fields closed. `'c` is `alone` for `anyModifier`, `union` for the
+operands of `|||` and for the masks the server sends, and free in the constants
+and in results of `|||`. Covariance makes `let m = a ||| b` polymorphic.
+
+**The score:** valid 21/21, invalid 16/16, misuse 12/12. No case fails, and the
+rejections read as their comments say. `test/spec.t`, `test/probe.t` and
+`test/conform.t` are unchanged and pass.
+
+**Why it takes two parameters:** experiment 3's argument. `valid/binding_table` and
+`invalid/grab_key_any_modifier_union` can't both pass with one type variable
+shared by the operands and the result of `|||`.
+
+**Where it's stricter than C, outside the spec:**
+
+- Closed by `exp/06-open-calls`, not merged (question 1): a fold's result to a
+  grab, and a narrower mask to a wider field. On `main`, `(p :> eventMask)` is the
+  workaround for the second.
+- A `keyMask` value can't be or-ed even when it isn't AnyModifier at runtime:
+  `{ m : keyMask }` then `b.m ||| lockMask`. The type admits AnyModifier, for which
+  C gets a `BadValue`, so this one is rule 1's doing.
+
+**What no design can do**, all C-valid and refused by every design tried:
+
+- `anyModifier ||| anyModifier` and `anyModifier ||| noModifier`. `binding_table`
+  makes `anyModifier`'s type unify with `shiftMask`'s. If `|||`'s operands can both
+  be `anyModifier`'s type, then `anyModifier ||| shiftMask` type-checks too, unless
+  a bound holds for each alone and not for their union, and a row bound can't say
+  that (no "at most `` `A ``, or at most `` `B ``").
+- `(mod4Mask ||| button1Mask) &~ button1Mask` to a grab. `&~` would have to remove a
+  tag from a row, and OCaml has no row subtraction. Per-flag tags don't help.
+- Anything that depends on a value: `grab_key (if n > 0 then shiftMask else
+  button1Mask)` with `n` always positive. C decides at runtime what types must decide
+  at compile time, so rule 2 only holds for programs whose masks don't depend on
+  values.
+
+**Ideas closed without a branch:**
+
+- Per-flag tags: no case tells them from group tags, the field types would list up
+  to 25 tags, and they don't help with `&~`.
+- A phantom parameter per family: it says what the rows say, with one more parameter
+  for each protocol set.
+- A separate type for AnyModifier: refuted by experiment 3.
+
+**What porting it changes for x11 users**, compared with `../x11/lib/x11.mli`:
+
+- `'a mask` becomes `('a, 'c) mask`, so a written `[> `Key ] mask` needs its second
+  parameter. The named types (`keyMask`, `eventMask`...) and the constants' names
+  don't change, and code without annotations compiles as before.
+- `anyModifier ||| m` and `m ||| anyModifier` become errors, and so does `|||` on a
+  value typed `keyMask`. These were `BadValue`s at runtime, except for the second
+  when the value isn't AnyModifier.
+- `ev.state &&& anyModifier` becomes an error: it was always false.
+- `let m = a ||| b` can now be used in several fields, with no annotation.
+- `keys` and `noModifier` are new names, the way to turn a state into a grab.
+- The `` `Any `` tag goes away, along with its row in `keyMask`.
+- `lib/internal/mask.ml` declares the types, and the ctypes side keeps seeing `int`s.
