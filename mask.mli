@@ -1,4 +1,4 @@
-(* x11's design, covariant: the relaxed value restriction generalizes [let m = a ||| b] *)
+(* Covariant, with AnyModifier closed: [anyModifier ||| shiftMask] can't type-check *)
 
 type +'a mask
 
@@ -66,22 +66,22 @@ val button2Mask : [> `Button ] mask
 val button3Mask : [> `Button ] mask
 val button4Mask : [> `Button ] mask
 val button5Mask : [> `Button ] mask
-val anyModifier : [> `Any ] mask
+val anyModifier : [ `Any ] mask
 
 (** {1 Stand-ins for the X calls}
 
     Each raises [Failure "BadValue"] when the server would. *)
 
-val grab_key : keyMask -> unit
+val grab_key : [< `Key | `Any ] mask -> unit
 (** XGrabKey's modifiers *)
 
-val grab_button : keyMask -> pointerEventMask -> unit
+val grab_button : [< `Key | `Any ] mask -> pointerEventMask -> unit
 (** XGrabButton's modifiers and event mask *)
 
-val ungrab_key : keyMask -> unit
+val ungrab_key : [< `Key | `Any ] mask -> unit
 (** XUngrabKey's modifiers *)
 
-val ungrab_button : keyMask -> unit
+val ungrab_button : [< `Key | `Any ] mask -> unit
 (** XUngrabButton's modifiers *)
 
 val select_input : eventMask -> unit
