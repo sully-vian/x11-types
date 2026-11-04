@@ -151,4 +151,13 @@ Expected: no flip on the spec, and experiment 4's three rule 2 gaps (the fold an
 the two narrower masks) close. The types are longer, so by the merge rule a tie
 doesn't get it into `main` on its own.
 
+Score: valid 21/21, invalid 16/16, misuse 12/12. No flip. The fold and both
+narrower masks now type-check, and every program outside the spec that should be
+rejected still is. Named row types keep the signatures short:
+`select_input : ([< eventFlags ], 'c) mask -> unit`.
+
+Not merged: it ties `main` with longer types, so the merge rule keeps
+experiment 5. But it respects rule 2 on programs the spec has no case for: see
+"Questions for the user".
+
 ## Questions for the user
