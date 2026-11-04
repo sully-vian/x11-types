@@ -4,7 +4,7 @@ type (+'a, +'c) mask
 type union
 type alone
 
-type keyMask = ([ `Key | `Any ], alone) mask
+type keyMask = ([ `Key ], alone) mask
 type stateMask = ([ `Key | `Button ], union) mask
 type eventMask = ([ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], union) mask
 type pointerEventMask = ([ `PointerEvent | `PointerDeviceEvent ], union) mask
@@ -12,13 +12,13 @@ type deviceEventMask = ([ `DeviceEvent | `PointerDeviceEvent ], union) mask
 
 val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
 
-val ( &&& ) : ('a, 'c) mask -> ('a, 'd) mask -> bool
+val ( &&& ) : ('a, 'c) mask -> ('a, 'c) mask -> bool
 (** [m &&& flags]: [m] holds at least one of [flags], like C's [m & flags] *)
 
-val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
+val ( &~ ) : ('a, 'c) mask -> ('a, 'c) mask -> ('a, 'c) mask
 (** [m &~ flags]: [m] without [flags], like C's [m & ~flags] *)
 
-val keys : ([< `Key | `Button | `Any ], 'c) mask -> ([> `Key ], 'd) mask
+val keys : ([< `Key | `Button ], 'c) mask -> ([> `Key ], 'd) mask
 (** The modifiers of a mask, without its buttons and the XKB group *)
 
 (** {1 Event masks} *)
@@ -68,7 +68,7 @@ val button2Mask : ([> `Button ], 'c) mask
 val button3Mask : ([> `Button ], 'c) mask
 val button4Mask : ([> `Button ], 'c) mask
 val button5Mask : ([> `Button ], 'c) mask
-val anyModifier : ([> `Any ], alone) mask
+val anyModifier : ([> `Key ], alone) mask
 
 (** {1 Stand-ins for the X calls}
 

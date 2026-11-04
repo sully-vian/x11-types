@@ -33,7 +33,7 @@
   Error: The field access attributes.your_event_mask has type
          The second variant type does not allow tag(s) `Event, `PointerEvent
   pass invalid/grab_button_any_modifier_union
-  Error: The value anyModifier has type ([> `Any ], Mask.alone) Mask.mask
+  Error: The value anyModifier has type ([> `Key ], Mask.alone) Mask.mask
          Type Mask.alone is not compatible with type Mask.union
   pass invalid/grab_button_exposure
   Error: The value exposureMask has type ([> `Event ], 'a) Mask.mask
@@ -42,7 +42,7 @@
   Error: This expression has type ([> `Button | `Key ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
   pass invalid/grab_key_any_modifier_union
-  Error: The value anyModifier has type ([> `Any ], Mask.alone) Mask.mask
+  Error: The value anyModifier has type ([> `Key ], Mask.alone) Mask.mask
          Type Mask.alone is not compatible with type Mask.union
   pass invalid/grab_key_button
   Error: This expression has type ([> `Button | `Key ], 'a) Mask.mask
@@ -63,7 +63,7 @@
   Error: The value m has type ([> `Event | `PointerDeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Event
   pass invalid/ungrab_button_any_modifier_union
-  Error: The value anyModifier has type ([> `Any ], Mask.alone) Mask.mask
+  Error: The value anyModifier has type ([> `Key ], Mask.alone) Mask.mask
          Type Mask.alone is not compatible with type Mask.union
   pass invalid/ungrab_key_button
   Error: This expression has type ([> `Button | `Key ], 'a) Mask.mask
@@ -85,7 +85,7 @@
          The second variant type does not allow tag(s) `DeviceEvent
   pass misuse/grab_key_int
   Error: The constant 0x40 has type int but an expression was expected of type
-         Mask.keyMask = ([ `Any | `Key ], Mask.alone) Mask.mask
+         Mask.keyMask = ([ `Key ], Mask.alone) Mask.mask
   pass misuse/grab_pointer_button_mask
   Error: The value button1Mask has type ([> `Button ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
@@ -93,8 +93,8 @@
   Error: The value structureNotifyMask has type ([> `Event ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Event
   pass misuse/select_input_any_modifier
-  Error: The value anyModifier has type ([> `Any ], Mask.alone) Mask.mask
-         The second variant type does not allow tag(s) `Any
+  Error: The value anyModifier has type ([> `Key ], Mask.alone) Mask.mask
+         The second variant type does not allow tag(s) `Key
   pass misuse/select_input_modifier
   Error: The value shiftMask has type ([> `Key ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Key
