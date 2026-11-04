@@ -127,4 +127,13 @@ user") show where it's still stricter than C:
   `grab_key (anyModifier ||| anyModifier)`, `grab_key (anyModifier ||| noModifier)`:
   see the summary, no design of this kind can take them.
 
+### 05: no tag for AnyModifier
+
+Branch `exp/05-no-any-tag`. `'c` already tells AnyModifier from the rest, so
+`` `Any `` may be redundant: `anyModifier : ([> `Key ], alone) mask`, `keyMask =
+([ `Key ], alone) mask`. To keep rejecting `ev.state &&& anyModifier`, `&&&` and
+`&~` tie the `'c` of their operands.
+
+Expected: no flip, one tag fewer. Merged if so, as a tie with simpler types.
+
 ## Questions for the user
