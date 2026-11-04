@@ -22,12 +22,14 @@ simpler types and clearer errors: the users are people porting C code.
   from, and `test/spec.t` must still pass. If a case looks wrong, don't touch
   it: write why in `LOG.md` under "Questions for the user".
 - `test/score.t`, through `dune promote`, after reading the diff.
+- `test/spec.t`'s totals, the same way, when you add cases.
 - `LOG.md`.
 
 Everything else is the measuring instrument: `oracle/`, `probe/`, `run.sh`,
-`reference/`, and the other tests. `test/spec.t`, `test/probe.t` and
-`test/conform.t` must stay as recorded. `dune promote` promotes every test, so
-check that only `score.t` changed before running it.
+`reference/`, and the other tests. `test/probe.t` and `test/conform.t` must stay
+as recorded. `test/spec.t` may change in its totals when cases are added, never
+with a `FAIL` line. `dune promote` promotes every test, so check that the diff
+holds nothing else before running it.
 
 ## How to work
 
@@ -61,7 +63,7 @@ tags, worktrees.
 ## Commands
 
 ```sh
-dune exec -- ./run.sh                  # scoreboard of mask.{mli,ml}
+dune exec -- ./run.sh                  # scoreboard of mask.{mli,ml}, in the source tree
 dune exec -- ./run.sh invalid/NAME     # the compiler's full output for a case
 dune test                              # score diff, plus the three checks
 dune promote                           # records the score (read the diff first)
