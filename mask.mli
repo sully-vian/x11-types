@@ -6,9 +6,12 @@ type alone
 
 type keyMask = ([ `Key ], alone) mask
 type stateMask = ([ `Key | `Button ], union) mask
-type eventMask = ([ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], union) mask
-type pointerEventMask = ([ `PointerEvent | `PointerDeviceEvent ], union) mask
-type deviceEventMask = ([ `DeviceEvent | `PointerDeviceEvent ], union) mask
+type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
+type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
+type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
+type eventMask = (eventFlags, union) mask
+type pointerEventMask = (pointerEventFlags, union) mask
+type deviceEventMask = (deviceEventFlags, union) mask
 
 val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
 
@@ -23,7 +26,7 @@ val keys : ([< `Key | `Button ], 'c) mask -> ([> `Key ], 'd) mask
 
 (** {1 Event masks} *)
 
-val noEventMask : ([< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ], 'c) mask
+val noEventMask : ([< eventFlags ], 'c) mask
 val keyPressMask : ([> `DeviceEvent ], 'c) mask
 val keyReleaseMask : ([> `DeviceEvent ], 'c) mask
 val buttonPressMask : ([> `PointerDeviceEvent ], 'c) mask
@@ -74,33 +77,36 @@ val anyModifier : ([> `Key ], alone) mask
 
     Each raises [Failure "BadValue"] when the server would. *)
 
-val grab_key : keyMask -> unit
+val grab_key : ([ `Key ], 'c) mask -> unit
 (** XGrabKey's modifiers *)
 
-val grab_button : keyMask -> pointerEventMask -> unit
+val grab_button : ([ `Key ], 'c) mask -> ([< pointerEventFlags ], 'c) mask -> unit
 (** XGrabButton's modifiers and event mask *)
 
-val ungrab_key : keyMask -> unit
+val ungrab_key : ([ `Key ], 'c) mask -> unit
 (** XUngrabKey's modifiers *)
 
-val ungrab_button : keyMask -> unit
+val ungrab_button : ([ `Key ], 'c) mask -> unit
 (** XUngrabButton's modifiers *)
 
-val select_input : eventMask -> unit
-val grab_pointer : pointerEventMask -> unit
-val change_active_pointer_grab : pointerEventMask -> unit
+val select_input : ([< eventFlags ], 'c) mask -> unit
+val grab_pointer : ([< pointerEventFlags ], 'c) mask -> unit
+val change_active_pointer_grab : ([< pointerEventFlags ], 'c) mask -> unit
 
-val change_do_not_propagate : deviceEventMask -> unit
+val change_do_not_propagate : ([< deviceEventFlags ], 'c) mask -> unit
 (** XChangeWindowAttributes' do_not_propagate_mask *)
 
 val create_window :
-  ?event_mask:eventMask -> ?do_not_propagate_mask:deviceEventMask -> unit -> unit
+  ?event_mask:([< eventFlags ], 'c) mask ->
+  ?do_not_propagate_mask:([< deviceEventFlags ], 'd) mask ->
+  unit ->
+  unit
 (** XCreateWindow's XSetWindowAttributes masks *)
 
-val send_event : eventMask -> unit
+val send_event : ([< eventFlags ], 'c) mask -> unit
 (** XSendEvent's event_mask: the windows' selections the event goes to *)
 
-val check_mask_event : eventMask -> unit
+val check_mask_event : ([< eventFlags ], 'c) mask -> unit
 (** XCheckMaskEvent: reads Xlib's queue, so it never gets a BadValue *)
 
 (** {1 Masks the server sends}
