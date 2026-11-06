@@ -16,9 +16,9 @@ type union
 type alone
 (** ['c] of the masks that may be [anyModifier] *)
 
-type 'c keyMask = ([ `Key ], 'c) mask
+type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
 (** The modifiers of a grab, [SETofKEYMASK or AnyModifier]. Annotate with
-    [_ keyMask]: ['c] follows the value. *)
+    [_ keyMask]: ['p] holds an open row and ['c], and both follow the value. *)
 
 type stateMask = ([ `Key | `Button ], union) mask
 (** The state of an event: [SETofKEYBUTMASK], and the XKB group *)
