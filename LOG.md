@@ -274,6 +274,11 @@ This undoes the tie from experiment 5, which only served to refuse
 Expected: `valid/difference_key_mask` and `valid/test_key_mask` pass, for valid 28/30,
 invalid 17/17, misuse 14/14. `ev.state &&& anyModifier` type-checks again.
 
+Score: valid 28/30, invalid 17/17, misuse 14/14. Flipped `valid/difference_key_mask`
+and `valid/test_key_mask` to pass. Merged. As expected, `ev.state &&& anyModifier` now
+type-checks, and it's always false. `ev.state = anyModifier` is still refused, and
+`(anyModifier &~ m) ||| shiftMask` too.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
