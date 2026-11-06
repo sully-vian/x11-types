@@ -394,6 +394,10 @@ experiment 12's signature on the current design.
 
 Expected: valid 37/37, and every union across fields accepted: invalid 9/17, misuse 13/14.
 
+Score: valid 37/37, invalid 9/17, misuse 13/14. Flipped `valid/function_argument_shared` to
+pass, and the eight `invalid` and one `misuse` that experiment 12 listed to accepted. Not
+merged: experiment 16 passes the same case and refuses more.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
