@@ -411,6 +411,14 @@ Expected: valid 37/37, and only the unions across event groups accepted: invalid
 `grab_pointer_exposure`, `grab_pointer_key_event`, `shared_event_mask`), misuse 13/14
 (`grab_button_structure`).
 
+Score: valid 37/37, invalid 12/17, misuse 13/14, as expected. Flipped
+`valid/function_argument_shared` to pass, and the six cases listed above to accepted. The
+modifier refusals all hold, and `e.state &&& keyPressMask` is still refused. By the ranking
+in `CLAUDE.md` it beats `main`, 37 to 36 on `valid`. Not merged, for now: the user asked
+to leave `function_argument_shared` failing if there's no correction, and whether this one
+counts is theirs to say, as it gives up `grab_pointer (buttonPressMask ||| exposureMask)`
+and rewrites the types they specified. See "Questions for the user".
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
