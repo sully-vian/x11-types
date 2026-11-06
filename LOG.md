@@ -300,8 +300,9 @@ failures beat more rejections" would favor it, but the int baseline would then w
 every comparison too. The user also asked for a correction, or else that the cases
 stay failing, and this isn't a correction.
 
-**Result: no design can pass `valid/pointer_mask_or_exposure` and
-`valid/event_mask_or_pointer_mask` while refusing `grab_pointer exposureMask`.**
+**Result, corrected by experiment 13: with names that hold no variable, no design can
+pass `valid/pointer_mask_or_exposure` and `valid/event_mask_or_pointer_mask` while
+refusing `grab_pointer exposureMask`.**
 
 1. `click : pointerEventMask` has a type `T` with no variable in it. A type
    abbreviation can't hold one: `type pointerEventMask = ([< `P | `PD ] as 'a) m` is
@@ -323,13 +324,10 @@ stay failing, and this isn't a correction.
 The same goes for any narrower name extended with a flag it doesn't list, such as a
 `deviceEventMask` or `attributes.do_not_propagate_mask` with `exposureMask`.
 
-The two cases stay in `spec/valid`, failing in the score. Workarounds, both tested, and
-in both `grab_pointer` still refuses the result:
-
-- No annotation: `let click = buttonPressMask ||| buttonReleaseMask` stays polymorphic,
-  so `grab_pointer click` and `select_input (click ||| exposureMask)` both type-check.
-- A coercion, thanks to covariance: `(click :> eventMask) ||| exposureMask` and
-  `base ||| (click :> eventMask)`.
+The two cases stayed in `spec/valid`, failing in the score, until experiment 13 passed
+them: this result only holds for names with no variable. Until then the workaround was no
+annotation: `let click = buttonPressMask ||| buttonReleaseMask` stays polymorphic, so
+`grab_pointer click` and `select_input (click ||| exposureMask)` both type-check.
 
 ### 13: named types with a parameter
 
@@ -349,6 +347,24 @@ types take a parameter.
 
 Expected, as the user measured on a clone: valid 30/30, invalid 17/17, misuse 14/14,
 before the new cases. `probe.t` and `conform.t` don't change.
+
+Score: valid 30/30, invalid 17/17, misuse 14/14, as the user measured, on the 30 valid
+cases then in the spec. Flipped `valid/pointer_mask_or_exposure` and
+`valid/event_mask_or_pointer_mask` to pass, with no coercion. `test/probe.t`,
+`test/conform.t` and `test/spec.t` have no diff.
+
+With seven new valid cases: valid 35/37, invalid 17/17, misuse 14/14. Five pass at once:
+`pointer_or_device_selection`, `test_event_masks`, `difference_event_masks`,
+`key_mask_or_lock` and `do_not_propagate_or_exposure`. `function_argument_shared` and
+`state_test_key_mask` fail, as the user expected. Merged.
+
+**Experiment 12's result was too strong.** It said no design can pass those two cases
+while refusing `grab_pointer exposureMask`. Its step 1 assumed that the annotation has a
+type with no variable, which was a property of how the cases were written, not of the
+problem. What still stands: a value whose type has no variable left can't take a flag
+outside it, which now applies to `stateMask`, to a record field with a closed type, and to
+a function's argument, whose variable is monomorphic. The workarounds at the end of that
+entry are no longer needed.
 
 ## Changes to the instrument
 
