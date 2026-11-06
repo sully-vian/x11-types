@@ -398,6 +398,19 @@ Score: valid 37/37, invalid 9/17, misuse 13/14. Flipped `valid/function_argument
 pass, and the eight `invalid` and one `misuse` that experiment 12 listed to accepted. Not
 merged: experiment 16 passes the same case and refuses more.
 
+### 16: `|||` tracks modifiers, not event groups
+
+Branch `exp/16-event-rows`. Experiment 15 lost refusals it didn't need to:
+`function_argument_shared` only asks `|||` to forget event groups, and modifiers can keep
+their tie. So split the row in two, `type (+'k, +'e, +'c) mask`: `'k` is `` `Key ``,
+`` `Button `` or `` `Ev `` (an event flag), shared by `|||`'s operands and its result, and
+`'e` is the event group, free in `|||`'s result.
+
+Expected: valid 37/37, and only the unions across event groups accepted: invalid 12/17
+(`change_active_pointer_grab_exposure`, `create_window_do_not_propagate`,
+`grab_pointer_exposure`, `grab_pointer_key_event`, `shared_event_mask`), misuse 13/14
+(`grab_button_structure`).
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
