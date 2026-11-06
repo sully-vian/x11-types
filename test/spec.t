@@ -3,6 +3,6 @@ raises one:
 
   $ ../run.sh --spec
   
-  valid: 30/30
+  valid: 37/37
   invalid: 17/17
   misuse: 14/14

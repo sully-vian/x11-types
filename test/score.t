@@ -6,11 +6,16 @@
   pass valid/check_mask_event
   pass valid/create_window
   pass valid/device_mask_as_selection
+  pass valid/difference_event_masks
   pass valid/difference_key_mask
   pass valid/do_not_propagate
+  pass valid/do_not_propagate_or_exposure
   pass valid/event_mask_or_pointer_mask
   pass valid/extend_selection
   pass valid/fold_modifiers
+  FAIL valid/function_argument_shared: rejected
+  Error: The value exposureMask has type ([> `Event ], 'a) Mask.mask
+         The second variant type does not allow tag(s) `Event
   pass valid/grab_button
   pass valid/grab_button_any_modifier_events
   pass valid/grab_from_state
@@ -19,13 +24,19 @@
   pass valid/grab_key_no_modifier
   pass valid/grab_numlock_variants
   pass valid/grab_pointer
+  pass valid/key_mask_or_lock
   pass valid/pointer_mask_as_selection
   pass valid/pointer_mask_or_exposure
+  pass valid/pointer_or_device_selection
   pass valid/query_pointer
   pass valid/select_input
   pass valid/send_event
   pass valid/shared_event_mask
   pass valid/sowm_clean_compare
+  FAIL valid/state_test_key_mask: rejected
+  Error: The value m has type 'a Mask.keyMask = ([ `Key ], 'a) Mask.mask
+         The first variant type does not allow tag(s) `Button
+  pass valid/test_event_masks
   pass valid/test_key_mask
   pass valid/ungrab
   pass valid/xkb_group
@@ -123,6 +134,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 30/30
+  valid: 35/37
   invalid: 17/17
   misuse: 14/14
