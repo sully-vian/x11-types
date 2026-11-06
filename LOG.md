@@ -429,6 +429,10 @@ compiles against it.
 
 Expected: `valid/binding_mask_field` passes at once: valid 37/38, 17/17, 14/14.
 
+Score: valid 37/38, invalid 17/17, misuse 14/14. `valid/binding_mask_field` passes, nothing
+else flipped. Merged. `oracle/mask.ml` gained the type's name, and `test/probe.t` and
+`test/conform.t` have no diff.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
