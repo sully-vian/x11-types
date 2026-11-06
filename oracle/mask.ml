@@ -14,7 +14,7 @@ let ( &&& ) m flags = m land flags <> 0
 let ( &~ ) m flags = m land lnot flags
 
 (* sowm's mod_clean keeps Shift, Control and Mod1..Mod5 *)
-let keys m = m land 0xFF
+let ( &. ) m flags = m land flags
 
 (* X.h *)
 let noEventMask = 0

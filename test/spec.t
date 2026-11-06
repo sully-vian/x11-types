@@ -5,4 +5,4 @@ raises one:
   
   valid: 25/25
   invalid: 16/16
-  misuse: 12/12
+  misuse: 15/15
