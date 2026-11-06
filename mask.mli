@@ -48,10 +48,11 @@ val ( &~ ) : ('a, 'c) mask -> ('a, 'c) mask -> ('a, 'c) mask
     [anyModifier], since removing flags from it leaves it valid. *)
 
 val ( &. ) :
-  ([< `Key | `Button ], 'c) mask -> ([< `Key ], union) mask -> ([> `Key ], 'd) mask
+  ([< `Key | `Button ], 'c) mask -> ([< `Key ], 'd) mask -> ([> `Key ], 'd) mask
 (** [m &. modifiers]: the [modifiers] that [m] holds, like C's [m & modifiers].
     The result has no buttons or XKB group, so it fits a grab: it's how an
-    event's state becomes one. *)
+    event's state becomes one. It only holds bits of [modifiers], so it may be
+    [anyModifier] only if they may. *)
 
 (** {1 Event masks} *)
 
