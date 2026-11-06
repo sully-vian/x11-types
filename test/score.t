@@ -8,9 +8,7 @@
   pass valid/device_mask_as_selection
   pass valid/difference_key_mask
   pass valid/do_not_propagate
-  FAIL valid/event_mask_or_pointer_mask: rejected
-  Error: The value click has type
-         The first variant type does not allow tag(s) `DeviceEvent, `Event
+  pass valid/event_mask_or_pointer_mask
   pass valid/extend_selection
   pass valid/fold_modifiers
   pass valid/grab_button
@@ -22,9 +20,7 @@
   pass valid/grab_numlock_variants
   pass valid/grab_pointer
   pass valid/pointer_mask_as_selection
-  FAIL valid/pointer_mask_or_exposure: rejected
-  Error: The value exposureMask has type ([> `Event ], 'a) Mask.mask
-         The second variant type does not allow tag(s) `Event
+  pass valid/pointer_mask_or_exposure
   pass valid/query_pointer
   pass valid/select_input
   pass valid/send_event
@@ -127,6 +123,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 28/30
+  valid: 30/30
   invalid: 17/17
   misuse: 14/14
