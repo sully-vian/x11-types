@@ -40,10 +40,10 @@ val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
 (** Union. [anyModifier] can't be an operand: [AnyModifier | ShiftMask] is a
     [BadValue]. *)
 
-val ( &&& ) : ('a, 'c) mask -> ('a, 'c) mask -> bool
+val ( &&& ) : ('a, 'c) mask -> ('a, 'd) mask -> bool
 (** [m &&& flags]: [m] holds at least one of [flags], like C's [m & flags] *)
 
-val ( &~ ) : ('a, 'c) mask -> ('a, 'c) mask -> ('a, 'c) mask
+val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
 (** [m &~ flags]: [m] without [flags], like C's [m & ~flags]. It takes
     [anyModifier], since removing flags from it leaves it valid. *)
 
