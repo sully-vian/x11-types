@@ -1,11 +1,20 @@
   $ ../run.sh
+  FAIL valid/and_dot_key_mask: rejected
+  Error: The value m has type Mask.keyMask = ([ `Key ], Mask.alone) Mask.mask
+         Type Mask.alone is not compatible with type Mask.union
   pass valid/binding_table
   pass valid/button_state
   pass valid/change_active_pointer_grab
   pass valid/check_mask_event
   pass valid/create_window
   pass valid/device_mask_as_selection
+  FAIL valid/difference_key_mask: rejected
+  Error: The value locks has type ([ `Key ], Mask.union) Mask.mask
+         Type Mask.union is not compatible with type Mask.alone
   pass valid/do_not_propagate
+  FAIL valid/event_mask_or_pointer_mask: rejected
+  Error: The value click has type
+         The first variant type does not allow tag(s) `DeviceEvent, `Event
   pass valid/extend_selection
   pass valid/fold_modifiers
   pass valid/grab_button
@@ -17,13 +26,22 @@
   pass valid/grab_numlock_variants
   pass valid/grab_pointer
   pass valid/pointer_mask_as_selection
+  FAIL valid/pointer_mask_or_exposure: rejected
+  Error: The value exposureMask has type ([> `Event ], 'a) Mask.mask
+         The second variant type does not allow tag(s) `Event
   pass valid/query_pointer
   pass valid/select_input
   pass valid/send_event
   pass valid/shared_event_mask
   pass valid/sowm_clean_compare
+  FAIL valid/test_key_mask: rejected
+  Error: The value locks has type ([ `Key ], Mask.union) Mask.mask
+         Type Mask.union is not compatible with type Mask.alone
   pass valid/ungrab
   pass valid/xkb_group
+  pass invalid/and_dot_any_modifier_union
+  Error: The value anyModifier has type ([ `Key ], Mask.alone) Mask.mask
+         Type Mask.alone is not compatible with type Mask.union
   pass invalid/change_active_pointer_grab_exposure
   Error: This expression has type
          The second variant type does not allow tag(s) `Event
@@ -72,9 +90,6 @@
   pass invalid/ungrab_key_button
   Error: This expression has type ([> `Button | `Key ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
-  pass misuse/and_dot_any_modifier
-  Error: The value anyModifier has type ([ `Key ], Mask.alone) Mask.mask
-         Type Mask.alone is not compatible with type Mask.union
   pass misuse/and_dot_event_modifier
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
@@ -118,6 +133,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 25/25
-  invalid: 16/16
-  misuse: 15/15
+  valid: 25/30
+  invalid: 17/17
+  misuse: 14/14
