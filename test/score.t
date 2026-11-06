@@ -1,7 +1,5 @@
   $ ../run.sh
-  FAIL valid/and_dot_key_mask: rejected
-  Error: The value m has type Mask.keyMask = ([ `Key ], Mask.alone) Mask.mask
-         Type Mask.alone is not compatible with type Mask.union
+  pass valid/and_dot_key_mask
   pass valid/binding_table
   pass valid/button_state
   pass valid/change_active_pointer_grab
@@ -40,7 +38,7 @@
   pass valid/ungrab
   pass valid/xkb_group
   pass invalid/and_dot_any_modifier_union
-  Error: The value anyModifier has type ([ `Key ], Mask.alone) Mask.mask
+  Error: This expression has type ([> `Key ], Mask.alone) Mask.mask
          Type Mask.alone is not compatible with type Mask.union
   pass invalid/change_active_pointer_grab_exposure
   Error: This expression has type
@@ -133,6 +131,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 25/30
+  valid: 26/30
   invalid: 17/17
   misuse: 14/14
