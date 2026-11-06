@@ -366,6 +366,16 @@ outside it, which now applies to `stateMask`, to a record field with a closed ty
 a function's argument, whose variable is monomorphic. The workarounds at the end of that
 entry are no longer needed.
 
+### 14: `_ keyMask` carries an open row too
+
+Branch `exp/14-key-mask-row`. For `valid/state_test_key_mask`: `m : _ keyMask` has the
+closed row `[ `Key ]`, which `e.state`'s `[ `Key | `Button ]` can't unify with. The other
+named types leave their row open. `keyMask` can too, keeping its single parameter by
+making it a pair: `type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c`.
+The annotation stays `_ keyMask`, and `grab_key` still closes the row to `[ `Key ]`.
+
+Expected: `state_test_key_mask` passes with no refusal lost: valid 36/37, 17/17, 14/14.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
