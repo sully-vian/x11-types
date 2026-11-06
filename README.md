@@ -10,8 +10,8 @@ back to x11 directly.
 1. If an OCaml call with mask arguments type-checks, its C equivalent doesn't
    get a `BadValue`.
 2. If a C call gets no `BadValue` for any value its mask expressions can take,
-   judging each mask by the constants it's built from, its OCaml equivalent
-   type-checks.
+   judging each mask by the constants it's built from, and a union containing
+   AnyModifier counts as invalid, its OCaml equivalent type-checks.
 
 Rule 2 doesn't count these as failures, though C accepts them:
 `anyModifier ||| anyModifier`, `anyModifier ||| noModifier`, and
