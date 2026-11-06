@@ -12,7 +12,9 @@ Every case of `spec/valid` type-checks and runs, and every case of
 `spec/invalid` and `spec/misuse` is rejected for the reason its comment gives.
 The score is in `test/score.t`. Designs are ranked first by `valid`, then by
 refusals (`invalid` + `misuse`): a valid C case refused is worse than a compiled
-`BadValue`, and a user should never need `:>`. Between designs with the same
+`BadValue`, and a user should never need `:>`. One exception: the refusal of
+`valid/function_argument_shared` is accepted, because correcting it would lose the
+distinction between event families in all `|||`. Between designs with the same
 score, prefer the one with simpler types and clearer errors: the users are people
 porting C code.
 
