@@ -1,15 +1,15 @@
-type (+'a, +'c) mask = int
+type (+'k, +'e, +'c) mask = int
 type union
 type alone
 
-type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
-type stateMask = ([ `Key | `Button ], union) mask
+type 'p keyMask = ('k, 'e, 'c) mask constraint 'p = ([> `Key ] as 'k) * 'e * 'c
+type stateMask = ([ `Key | `Button ], unit, union) mask
 type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
 type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
 type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
-type 'a eventMask = (([> eventFlags ] as 'a), union) mask
-type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
-type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
+type 'a eventMask = ([ `Ev ], ([> eventFlags ] as 'a), union) mask
+type 'a pointerEventMask = ([ `Ev ], ([> pointerEventFlags ] as 'a), union) mask
+type 'a deviceEventMask = ([ `Ev ], ([> deviceEventFlags ] as 'a), union) mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
@@ -105,9 +105,9 @@ let button_press state : buttonEvent = { state }
 let query_pointer state = state
 
 type windowAttributes = {
-  all_event_masks : 'a. (([> eventFlags ] as 'a), union) mask;
-  your_event_mask : 'a. (([> eventFlags ] as 'a), union) mask;
-  do_not_propagate_mask : 'a. (([> deviceEventFlags ] as 'a), union) mask;
+  all_event_masks : 'a. ([ `Ev ], ([> eventFlags ] as 'a), union) mask;
+  your_event_mask : 'a. ([ `Ev ], ([> eventFlags ] as 'a), union) mask;
+  do_not_propagate_mask : 'a. ([ `Ev ], ([> deviceEventFlags ] as 'a), union) mask;
 }
 
 let window_attributes ~all ~yours ~dont_propagate =
