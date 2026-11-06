@@ -72,6 +72,15 @@
   pass invalid/ungrab_key_button
   Error: This expression has type ([> `Button | `Key ], 'a) Mask.mask
          The second variant type does not allow tag(s) `Button
+  pass misuse/and_dot_any_modifier
+  Error: The value anyModifier has type ([ `Key ], Mask.alone) Mask.mask
+         Type Mask.alone is not compatible with type Mask.union
+  pass misuse/and_dot_event_modifier
+  Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
+         The second variant type does not allow tag(s) `DeviceEvent
+  pass misuse/and_dot_state_event
+  Error: The value exposureMask has type ([> `Event ], 'a) Mask.mask
+         The second variant type does not allow tag(s) `Event
   pass misuse/button_state_as_selection
   Error: The field access ev.state has type
          These two variant types have no intersection
@@ -111,4 +120,4 @@
   
   valid: 25/25
   invalid: 16/16
-  misuse: 12/12
+  misuse: 15/15
