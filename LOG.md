@@ -429,7 +429,8 @@ the operands and the result of `|||`.
   `deviceEventMask` goes to `select_input` with no coercion, and any `|||` result,
   including a fold's, goes to a grab. Signatures read `([< eventFlags ], 'c) mask`, with
   three new row names: `eventFlags`, `pointerEventFlags` and `deviceEventFlags`.
-- Extending a value annotated with a narrower type still needs `:>`, as in x11 today.
+- Extending a value annotated with a narrower type needs `:>`. x11's invariant `'a mask`
+  refuses that coercion today, so this is a gain.
 - `anyModifier ||| m` and `m ||| anyModifier` become errors, and so does `|||` on a value
   typed `keyMask`. These were `BadValue`s at runtime, except for the second when the value
   isn't AnyModifier.
