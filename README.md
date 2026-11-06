@@ -42,7 +42,7 @@ accepts a mask only because two constants share a value: `ShiftMask` and
 - `probe/probe.c`: asks a real X server (its own Xvfb) which bits each request
   accepts. `oracle/probe.ml` prints the same report from a Mask module.
 - `oracle/semantics.ml`: prints what a Mask module computes besides the calls:
-  constants, operators, `keys`, and the masks the server sends.
+  constants, operators, and the masks the server sends.
 - `CLAUDE.md`, `LOG.md`: the instructions for a session iterating on the
   design, and its log. Each variant it tries is an `exp/` branch.
 - `reference/`: excerpts of the protocol spec, the X server and Xlib, with
@@ -79,7 +79,8 @@ is typed is the design.
 - Mask types: `keyMask`, `stateMask`, `eventMask`, `pointerEventMask`,
   `deviceEventMask`.
 - Operators: `|||` (union), `&&&` (holds any of), `&~` (difference), and
-  `keys` (the modifiers of a mask, without buttons and XKB group bits).
+  `&.` (intersection with modifiers: the result is a set of modifiers, without
+  buttons and XKB group bits).
 - Constants: X.h's event, modifier and button masks, `anyModifier`, and
   `noModifier` (C's 0 for modifiers).
 - Calls, each modelling one Xlib function's masks: `grab_key`, `ungrab_key`,

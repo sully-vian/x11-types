@@ -65,13 +65,14 @@ let () =
   List.iter (fun (name, v) -> Printf.printf "%s = 0x%x\n" name v) constants;
   List.iter
     (fun a ->
-      Printf.printf "keys 0x%x = 0x%x\n" a (int (Mask.keys (mask a)));
+      Printf.printf "0x%x &. 0xff = 0x%x\n" a (int Mask.(mask a &. mask 0xFF));
       List.iter
         (fun b ->
-          Printf.printf "0x%x: ||| 0x%x, &&& %b, &~ 0x%x\n" a
+          Printf.printf "0x%x: ||| 0x%x, &&& %b, &~ 0x%x, &. 0x%x\n" a
             (int Mask.(mask a ||| mask b))
             Mask.(mask a &&& mask b)
-            (int Mask.(mask a &~ mask b)))
+            (int Mask.(mask a &~ mask b))
+            (int Mask.(mask a &. mask b)))
         samples)
     samples;
   (* The masks the server sends reach the program unchanged *)

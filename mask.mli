@@ -47,9 +47,11 @@ val ( &~ ) : ('a, 'c) mask -> ('a, 'c) mask -> ('a, 'c) mask
 (** [m &~ flags]: [m] without [flags], like C's [m & ~flags]. It takes
     [anyModifier], since removing flags from it leaves it valid. *)
 
-val keys : ([< `Key | `Button ], 'c) mask -> ([> `Key ], 'd) mask
-(** The modifiers of a mask, without its buttons and the XKB group. The result
-    fits a grab: it's how an event's state becomes one. *)
+val ( &. ) :
+  ([< `Key | `Button ], 'c) mask -> ([< `Key ], union) mask -> ([> `Key ], 'd) mask
+(** [m &. modifiers]: the [modifiers] that [m] holds, like C's [m & modifiers].
+    The result has no buttons or XKB group, so it fits a grab: it's how an
+    event's state becomes one. *)
 
 (** {1 Event masks} *)
 
