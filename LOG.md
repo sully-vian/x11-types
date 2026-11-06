@@ -382,6 +382,18 @@ button1Mask ||| shiftMask` type-checks, and it's the call, `grab_key m`, that re
 a function, `fun (m : _ keyMask) -> grab_key m; e.state &&& m` is still refused, as the
 argument is monomorphic: see experiment 15.
 
+### 15: `|||` doesn't track tags, for `function_argument_shared`
+
+Branch `exp/15-free-union`. In `let f click = grab_pointer click; select_input (click |||
+exposureMask)`, `click` has one monomorphic type, so a named type's parameter can't help.
+`grab_pointer` bounds it from above, and if `|||` shares its row with the operands,
+`exposureMask` adds `` `Event `` to it, which conflicts. So on any design where `|||`
+shares its operands' row, `f` type-checks only if `exposureMask` fits `grab_pointer`. Only
+untying the row can pass it: `( ||| ) : ('a, union) mask -> ('b, union) mask -> ('r, 'c) mask`,
+experiment 12's signature on the current design.
+
+Expected: valid 37/37, and every union across fields accepted: invalid 9/17, misuse 13/14.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
