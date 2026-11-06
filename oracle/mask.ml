@@ -4,6 +4,7 @@
    directory its C equivalent's outcome puts it in. *)
 
 type 'c keyMask = int
+type bindingMask = int
 type stateMask = int
 type 'a eventMask = int
 type 'a pointerEventMask = int
