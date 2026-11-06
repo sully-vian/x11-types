@@ -464,15 +464,7 @@ Made at the user's request, after the first summary:
 
 ## Questions for the user
 
-1. **Should `exp/16-event-rows` go into `main`?** It passes `valid/function_argument_shared`
-   and scores valid 37/37, invalid 12/17, misuse 13/14, against `main`'s 36/37, 17/17, 14/14.
-   The ranking in `CLAUDE.md` puts it first. But it compiles six programs that it refuses
-   today, five of which get a `BadValue`, starting with `grab_pointer (buttonPressMask |||
-   exposureMask)`, and takes three type parameters instead of two, to serve one case. Not
-   merged, as the user asked to leave that case failing if there's no correction. To take
-   it, `git merge exp/16-event-rows`, keeping `main`'s log.
-
-Resolved by the user:
+None open. Resolved by the user:
 
 - `exp/06-open-calls`: merged after its `grab_button` fix.
 - The spec can grow: `test/spec.t` may change in its totals, never with a `FAIL` line.
@@ -482,10 +474,12 @@ Resolved by the user:
 - `shiftMask &. anyModifier` wasn't an invalid case: it's deleted, and accepted.
 - `&~` and `&&&` don't tie their operands' `'c`.
 - Designs are ranked by `valid`, then by refusals, and users should never need `:>`.
+- `exp/16-event-rows` isn't merged, and `valid/function_argument_shared` stays failing in
+  place: `CLAUDE.md` accepts that refusal, as an exception to the ranking.
 
 ## Summary
 
-**The design** (`main`, from experiments 2, 4, 5, 6, 9, 10, 11, 13 and 14). `type (+'a, +'c)
+**The design** (`main`, from experiments 2, 4, 5, 6, 9, 10, 11, 13, 14 and 17). `type (+'a, +'c)
 mask`, an `int` at runtime. `'a` holds x11's group tags, without `` `Any ``: constants are
 open (`[> `Key ]`), and calls take any subset (`select_input : ([< eventFlags ], 'c) mask ->
 unit`). The named types take a parameter, written `_`, that keeps their row open:
@@ -493,19 +487,27 @@ unit`). The named types take a parameter, written `_`, that keeps their row open
 `windowAttributes`' fields are polymorphic in the same way. `'c` is `alone` for
 `anyModifier`, `union` for the operands of `|||` and for the masks the server sends, free in
 the constants and in results of `|||`. Only `|||` looks at `'c`, and each mask of a call has
-its own. `m &. modifiers` intersects a state or modifiers with a set of modifiers, keeps that
+its own. `bindingMask` names the modifiers of a shortcut table without AnyModifier. `m &.
+modifiers` intersects a state or modifiers with a set of modifiers, keeps that
 set's `'c`, and fits a grab. Covariance makes `let m = a ||| b` polymorphic. No case needs `:>`.
 
-**The score:** valid 36/37, invalid 17/17, misuse 14/14. `test/probe.t` and `test/conform.t`
+**The score:** valid 37/38, invalid 17/17, misuse 14/14. `test/probe.t` and `test/conform.t`
 are unchanged and pass, and `test/spec.t` changed only in its totals.
 
 **The case it fails, and why:** `valid/function_argument_shared`, `let f click = grab_pointer
 click; select_input (click ||| exposureMask)`. A function's argument is monomorphic, so
 `click` has one type for both uses. If `|||` shares its operands' row, that type has to take
-`` `Event `` and fit `grab_pointer`, and then `exposureMask` fits `grab_pointer` too. So it
-only passes if `|||` stops tracking event groups, which costs at least the refusals of
-experiment 16 (question 1). Workaround: let the caller build the selection, `let f click
-selection = ...` then `f click (click ||| exposureMask)`.
+`` `Event `` and fit `grab_pointer`, and then `exposureMask` fits `grab_pointer` too. It only
+passes if `|||` stops tracking event groups, which costs at least the six refusals of
+`exp/16-event-rows` (37/37 on `valid` then, invalid 12/17, misuse 13/14). The user decided
+against that: the refusal is accepted, as an exception to the ranking in `CLAUDE.md`, because
+correcting it would lose the distinction between event families in all `|||`. Two workarounds,
+both tested with real values:
+
+- Let the caller build the selection: `let f click selection = grab_pointer click;
+  select_input selection`, then `f click (click ||| exposureMask)`.
+- Pass a record with a polymorphic field: `type r = { click : 'a. 'a pointerEventMask }`, then
+  `let f r = grab_pointer r.click; select_input (r.click ||| exposureMask)`.
 
 **Why it takes two parameters:** experiment 3's argument. `valid/binding_table` and
 `invalid/grab_key_any_modifier_union` can't both pass with one type variable shared by the
@@ -515,10 +517,13 @@ operands and the result of `|||`.
 
 - Any value whose type has no variable left can't take a flag outside it: `stateMask`, a
   record field with a closed row, a function's argument. A record field can stay open by being
-  polymorphic: `{ c : 'a. 'a pointerEventMask }`.
+  polymorphic: `{ click : 'a. 'a pointerEventMask }`.
+- `_ keyMask` is forbidden in a type declaration, as is any `_`: `{ m : _ keyMask }` gets `A
+  type wildcard _ is not allowed in this type declaration`. A field takes `bindingMask`, or
+  `([ `Key ] * alone) keyMask` if it may hold AnyModifier, or a parameter of the record.
 - `fun (m : _ keyMask) -> grab_key m; e.state &&& m` is refused, for the same reason as `f`.
 - `([ `Key ] * alone) keyMask` can't be or-ed, since it admits AnyModifier, and a union
-  containing it is invalid. A field meant to be or-ed takes `([ `Key ] * union) keyMask`.
+  containing it is invalid. A field meant to be or-ed takes `bindingMask`.
 - `let m : _ keyMask = button1Mask ||| shiftMask` type-checks: the row is open, so the
   annotation doesn't promise "no buttons". `grab_key m` refuses it.
 - Two tests type-check and are always false: `ev.state &&& anyModifier` and `(ev.state &.
@@ -548,8 +553,9 @@ operands and the result of `|||`.
   The constants' names don't change.
 - The named types take a parameter: `keyMask`, `eventMask`, `pointerEventMask` and
   `deviceEventMask` are annotated `_ keyMask` and so on. `stateMask` doesn't change.
-- `'p keyMask` has a pair for its parameter, `row * 'c`, which only shows when a record field
-  has to spell it out.
+- A shortcut table's field is typed `bindingMask`, a new name, and can be or-ed: `k.m |||
+  lockMask`. `'p keyMask` has a pair for its parameter, `row * 'c`, which only shows when a
+  field that may hold AnyModifier has to spell it out.
 - Calls take row-bounded types, so a `_ pointerEventMask` goes to `select_input`, and any `|||`
   result, including a fold's, goes to a grab. Signatures read `([< eventFlags ], 'c) mask`, with
   three new row names: `eventFlags`, `pointerEventFlags` and `deviceEventFlags`.
