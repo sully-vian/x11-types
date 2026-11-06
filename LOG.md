@@ -249,6 +249,17 @@ button1Mask` type-checks and is always false, since the result is open, as with
 `keys`. `ev.state &. m`, with `m` from a table holding AnyModifier, is refused, as
 `shiftMask &. anyModifier` requires, though C accepts it.
 
+### 10: `&.` keeps its second operand's `'c`
+
+Branch `exp/10-and-dot-keeps-c`. The user's decision: `( &. ) : ([< `Key | `Button ],
+'c) mask -> ([< `Key ], 'd) mask -> ([> `Key ], 'd) mask`. The result only holds bits
+of the second operand, so it can be AnyModifier only if that can, and it keeps that
+operand's `'c`. `misuse/and_dot_any_modifier` is deleted by exception: C accepts it,
+and it no longer has a reason to be refused.
+
+Expected: `valid/and_dot_key_mask` passes, and `invalid/and_dot_any_modifier_union`
+stays rejected, now by `|||`: valid 26/30, invalid 17/17, misuse 14/14.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
