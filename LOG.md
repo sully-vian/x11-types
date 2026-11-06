@@ -263,6 +263,17 @@ stays rejected, now by `|||`: valid 26/30, invalid 17/17, misuse 14/14.
 Score: valid 26/30, invalid 17/17, misuse 14/14. Flipped `valid/and_dot_key_mask` to
 pass. `invalid/and_dot_any_modifier_union` stays rejected, now at the `|||`. Merged.
 
+### 11: `&~` and `&&&` don't tie their operands' `'c`
+
+Branch `exp/11-untied-operands`. The user's decision: `( &&& ) : ('a, 'c) mask -> ('a,
+'d) mask -> bool` and `( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask`.
+This undoes the tie from experiment 5, which only served to refuse
+`ev.state &&& anyModifier`. `&~` is still sound: its result keeps the first operand's
+`'c`, and removing flags from a valid mask leaves it valid.
+
+Expected: `valid/difference_key_mask` and `valid/test_key_mask` pass, for valid 28/30,
+invalid 17/17, misuse 14/14. `ev.state &&& anyModifier` type-checks again.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
