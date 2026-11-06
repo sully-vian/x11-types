@@ -290,6 +290,47 @@ OCaml can't compute `'r` from `'a` and `'b`, so it has to be free.
 Expected: valid 30/30, but every union of flags from different fields type-checks,
 so the `invalid` and `misuse` cases built on a union fail. It measures the price.
 
+Score: valid 30/30, invalid 9/17, misuse 13/14. Flipped the two cases to pass, and
+these to accepted: `invalid/change_active_pointer_grab_exposure`,
+`create_window_do_not_propagate`, `grab_button_modifier_button`, `grab_key_button`,
+`grab_pointer_exposure`, `grab_pointer_key_event`, `shared_event_mask`,
+`ungrab_key_button`, and `misuse/grab_button_structure`. Not merged: eight programs
+now type-check and get a `BadValue`, which breaks rule 1. Read alone, "fewer `valid`
+failures beat more rejections" would favor it, but the int baseline would then win
+every comparison too. The user also asked for a correction, or else that the cases
+stay failing, and this isn't a correction.
+
+**Result: no design can pass `valid/pointer_mask_or_exposure` and
+`valid/event_mask_or_pointer_mask` while refusing `grab_pointer exposureMask`.**
+
+1. `click : pointerEventMask` has a type `T` with no variable in it. A type
+   abbreviation can't hold one: `type pointerEventMask = ([< `P | `PD ] as 'a) m` is
+   refused, `A type variable is unbound in this type declaration`.
+2. `grab_pointer click` must type-check (`valid/pointer_mask_as_selection`), so that
+   field accepts `T`. Type checking here is unification: there's no implicit subtyping.
+3. If the operands of `|||` share the variables that hold the tags, `click |||
+   exposureMask` type-checks only if `exposureMask`'s type has `T` as an instance. Then
+   `exposureMask` fits wherever `T` does, so `grab_pointer exposureMask` type-checks,
+   and so do `invalid/grab_pointer_exposure` and `misuse/grab_pointer_structure`.
+4. If they don't share them, the result's tags have to be computed from both operands,
+   and OCaml has no join of rows. They're either free (this experiment, 9 flips), or a
+   structure holding both operands. A small model of the latter, `||| : 'a m -> 'b m
+   -> [> `Or of 'a * 'b ] m`, with fields bounded by `[< ... | `Or of 'x * 'x ] as 'x`,
+   still refuses `click ||| exposure`: an arbitrarily deep bound has to be recursive,
+   which forces both branches to the same type, `T` again. That model was a scratch
+   program, not a branch, as it can't even keep one flag's type across `|||`.
+
+The same goes for any narrower name extended with a flag it doesn't list, such as a
+`deviceEventMask` or `attributes.do_not_propagate_mask` with `exposureMask`.
+
+The two cases stay in `spec/valid`, failing in the score. Workarounds, both tested, and
+in both `grab_pointer` still refuses the result:
+
+- No annotation: `let click = buttonPressMask ||| buttonReleaseMask` stays polymorphic,
+  so `grab_pointer click` and `select_input (click ||| exposureMask)` both type-check.
+- A coercion, thanks to covariance: `(click :> eventMask) ||| exposureMask` and
+  `base ||| (click :> eventMask)`.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
