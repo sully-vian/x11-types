@@ -214,6 +214,18 @@ Score: valid 25/25, invalid 16/16, misuse 12/12. Flipped
 `valid/device_mask_as_selection`. Merged: it now beats `main`'s 22/25 on the score.
 `test/spec.t` didn't change on the branch beyond the totals it got from `main`.
 
+### 09: `&.` replaces `keys`
+
+Branch `exp/09-and-dot`. The user's decision: `keys` leaves the contract, for
+`val ( &. ) : ([< `Key | `Button ], 'c) mask -> ([< `Key ], union) mask -> ([> `Key ], 'd) mask`.
+A program names the modifiers it keeps, as C does. The six cases that use `keys`
+are rewritten, and `oracle/mask.ml` and `oracle/semantics.ml` adapted, by exception.
+Each case builds `modifiers`, the eight modifier flags (`0xFF`, what `keys` kept),
+and writes `x &. modifiers` for `keys x`, so that it verifies the same thing.
+
+Expected: valid 25/25, and the three new cases rejected: 25 valid, 16 or 17 invalid,
+14 or 15 misuse. `probe.t` and `conform.t` don't change.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
