@@ -18,7 +18,15 @@ type alone
 
 type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
 (** The modifiers of a grab, [SETofKEYMASK or AnyModifier]. Annotate with
-    [_ keyMask]: ['p] holds an open row and ['c], and both follow the value. *)
+    [_ keyMask]: ['p] holds an open row and ['c], and both follow the value.
+
+    A type declaration refuses [_], so [{ m : _ keyMask }] doesn't compile. A field
+    takes [bindingMask], or [([ `Key ] * alone) keyMask] if it may hold
+    [anyModifier], or a parameter of the record. *)
+
+type bindingMask = ([ `Key ], union) mask
+(** The modifiers of a table of shortcuts without [anyModifier]: a field of this
+    type can be or-ed, as [k.m ||| lockMask], and grabbed. *)
 
 type stateMask = ([ `Key | `Button ], union) mask
 (** The state of an event: [SETofKEYBUTMASK], and the XKB group *)

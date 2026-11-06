@@ -419,6 +419,20 @@ to leave `function_argument_shared` failing if there's no correction, and whethe
 counts is theirs to say, as it gives up `grab_pointer (buttonPressMask ||| exposureMask)`
 and rewrites the types they specified. See "Questions for the user".
 
+### 17: a name for the modifiers of a shortcut table
+
+Branch `exp/17-binding-mask`. The user's decision: `type bindingMask = ([ `Key ], union)
+mask`, the type of a table's field when it holds no AnyModifier. `_ keyMask` can't be used
+there, since a type declaration refuses wildcards, and the field couldn't be or-ed as
+`([ `Key ] * alone) keyMask`. The oracle gets the name too, as an `int`, so that the case
+compiles against it.
+
+Expected: `valid/binding_mask_field` passes at once: valid 37/38, 17/17, 14/14.
+
+Score: valid 37/38, invalid 17/17, misuse 14/14. `valid/binding_mask_field` passes, nothing
+else flipped. Merged. `oracle/mask.ml` gained the type's name, and `test/probe.t` and
+`test/conform.t` have no diff.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:

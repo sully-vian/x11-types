@@ -1,5 +1,6 @@
   $ ../run.sh
   pass valid/and_dot_key_mask
+  pass valid/binding_mask_field
   pass valid/binding_table
   pass valid/button_state
   pass valid/change_active_pointer_grab
@@ -132,6 +133,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 36/37
+  valid: 37/38
   invalid: 17/17
   misuse: 14/14
