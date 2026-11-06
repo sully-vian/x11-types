@@ -226,6 +226,29 @@ and writes `x &. modifiers` for `keys x`, so that it verifies the same thing.
 Expected: valid 25/25, and the three new cases rejected: 25 valid, 16 or 17 invalid,
 14 or 15 misuse. `probe.t` and `conform.t` don't change.
 
+Score: valid 25/25, invalid 16/16, misuse 15/15. The three new cases are rejected
+for their reasons, nothing else flipped. Merged, the user's decision.
+
+`shiftMask &. anyModifier` was asked for as `invalid`, and is in `misuse`:
+`ShiftMask & AnyModifier` is `1 & 0x8000 = 0`, valid in every field, so no call on it
+gets a `BadValue`. In `invalid`, `run.sh --spec` says `C gives valid`, which is a
+`FAIL` line in `spec.t`. See "Questions for the user".
+
+`test/probe.t` and `test/conform.t` have no diff, and `test/spec.t` moved only in the
+misuse total. The oracle's report stays at 222 lines: the 12 `keys 0x.. = 0x..` lines
+became `0x.. &. 0xff = 0x..` with the same values, the 144 lines per pair of samples
+gained a `&.` column (each the intersection, checked independently, so that a `&.`
+ignoring its second operand can't pass), and the other 66 didn't change. The six
+rewritten cases react as their `keys` versions did to a broken operator: one that
+keeps everything is caught by five of them, and `binding_table` catches it in neither
+version; one that drops Mod4 from both sides of a comparison is caught by none, in
+either version.
+
+Consequences of the signature, outside the spec: `(ev.state &. modifiers) &&&
+button1Mask` type-checks and is always false, since the result is open, as with
+`keys`. `ev.state &. m`, with `m` from a table holding AnyModifier, is refused, as
+`shiftMask &. anyModifier` requires, though C accepts it.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
