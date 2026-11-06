@@ -260,6 +260,9 @@ and it no longer has a reason to be refused.
 Expected: `valid/and_dot_key_mask` passes, and `invalid/and_dot_any_modifier_union`
 stays rejected, now by `|||`: valid 26/30, invalid 17/17, misuse 14/14.
 
+Score: valid 26/30, invalid 17/17, misuse 14/14. Flipped `valid/and_dot_key_mask` to
+pass. `invalid/and_dot_any_modifier_union` stays rejected, now at the `|||`. Merged.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
