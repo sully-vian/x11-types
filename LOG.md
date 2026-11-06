@@ -331,6 +331,25 @@ in both `grab_pointer` still refuses the result:
 - A coercion, thanks to covariance: `(click :> eventMask) ||| exposureMask` and
   `base ||| (click :> eventMask)`.
 
+### 13: named types with a parameter
+
+Branch `exp/13-named-params`. The user's design, and a correction to experiment 12:
+its argument assumed that a named type holds no variable, and this one has one.
+
+    type 'a eventMask = (([> eventFlags ] as 'a), union) mask
+    type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
+    type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
+    type 'c keyMask = ([ `Key ], 'c) mask
+
+`windowAttributes`' fields are polymorphic: `all_event_masks` and `your_event_mask`
+are `'a. (([> eventFlags ] as 'a), union) mask`, `do_not_propagate_mask` is
+`'a. (([> deviceEventFlags ] as 'a), union) mask`. By exception, the seven cases that
+annotate write `_ pointerEventMask` and so on, the contract says so, and the oracle's
+types take a parameter.
+
+Expected, as the user measured on a clone: valid 30/30, invalid 17/17, misuse 14/14,
+before the new cases. `probe.t` and `conform.t` don't change.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
