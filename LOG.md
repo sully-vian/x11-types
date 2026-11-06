@@ -376,6 +376,12 @@ The annotation stays `_ keyMask`, and `grab_key` still closes the row to `[ `Key
 
 Expected: `state_test_key_mask` passes with no refusal lost: valid 36/37, 17/17, 14/14.
 
+Score: valid 36/37, invalid 17/17, misuse 14/14. Flipped `valid/state_test_key_mask` to
+pass, with no refusal lost. Merged. The annotation promises less: `let m : _ keyMask =
+button1Mask ||| shiftMask` type-checks, and it's the call, `grab_key m`, that refuses it. In
+a function, `fun (m : _ keyMask) -> grab_key m; e.state &&& m` is still refused, as the
+argument is monomorphic: see experiment 15.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
