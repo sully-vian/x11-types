@@ -279,6 +279,17 @@ and `valid/test_key_mask` to pass. Merged. As expected, `ev.state &&& anyModifie
 type-checks, and it's always false. `ev.state = anyModifier` is still refused, and
 `(anyModifier &~ m) ||| shiftMask` too.
 
+### 12: `|||` doesn't tie its operands' tags
+
+Branch `exp/12-untied-union`. Looking for a correction to the two cases left,
+`valid/pointer_mask_or_exposure` and `valid/event_mask_or_pointer_mask`: a named,
+closed mask can't take a flag it doesn't list, because the operands of `|||` share
+`'a`. So untie them: `( ||| ) : ('a, union) mask -> ('b, union) mask -> ('r, 'c) mask`.
+OCaml can't compute `'r` from `'a` and `'b`, so it has to be free.
+
+Expected: valid 30/30, but every union of flags from different fields type-checks,
+so the `invalid` and `misuse` cases built on a union fail. It measures the price.
+
 ## Changes to the instrument
 
 Made at the user's request, after the first summary:
