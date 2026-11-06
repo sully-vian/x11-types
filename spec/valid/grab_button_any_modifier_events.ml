@@ -3,5 +3,5 @@
    grab_button shared one 'c between them *)
 open Mask
 let () =
-  let events : pointerEventMask = buttonPressMask ||| buttonReleaseMask in
+  let events : _ pointerEventMask = buttonPressMask ||| buttonReleaseMask in
   grab_button anyModifier events

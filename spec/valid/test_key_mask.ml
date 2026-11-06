@@ -3,5 +3,5 @@
    tie its operands' 'c *)
 open Mask
 let locks = List.fold_left ( ||| ) noModifier [ lockMask; mod2Mask ]
-let bindings : keyMask list = [ mod4Mask ||| lockMask; anyModifier ]
-let () = assert (List.map (fun (m : keyMask) -> m &&& locks) bindings = [ true; false ])
+let bindings : _ keyMask list = [ mod4Mask ||| lockMask; anyModifier ]
+let () = assert (List.map (fun (m : _ keyMask) -> m &&& locks) bindings = [ true; false ])

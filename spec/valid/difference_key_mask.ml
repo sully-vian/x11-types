@@ -3,5 +3,5 @@
    user's decision: &~ doesn't tie its operands' 'c *)
 open Mask
 let locks = List.fold_left ( ||| ) noModifier [ lockMask; mod2Mask ]
-let bindings : keyMask list = [ mod4Mask ||| lockMask; anyModifier ]
-let () = List.iter (fun (m : keyMask) -> grab_key (m &~ locks)) bindings
+let bindings : _ keyMask list = [ mod4Mask ||| lockMask; anyModifier ]
+let () = List.iter (fun (m : _ keyMask) -> grab_key (m &~ locks)) bindings

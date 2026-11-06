@@ -76,8 +76,9 @@ that the errors stay readable.
 `mask.mli` provides the names below, and the spec only uses them. How each one
 is typed is the design.
 
-- Mask types: `keyMask`, `stateMask`, `eventMask`, `pointerEventMask`,
-  `deviceEventMask`.
+- Mask types: `stateMask`, and `keyMask`, `eventMask`, `pointerEventMask`,
+  `deviceEventMask`, each taking one parameter: a case annotates with
+  `_ keyMask`.
 - Operators: `|||` (union), `&&&` (holds any of), `&~` (difference), and
   `&.` (intersection with modifiers: the result is a set of modifiers, without
   buttons and XKB group bits).
