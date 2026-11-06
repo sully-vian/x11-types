@@ -264,11 +264,13 @@ Made at the user's request, after the first summary:
   OCaml equivalent type-checks."
 - Four `valid` cases added: `fold_modifiers`, `pointer_mask_as_selection`,
   `device_mask_as_selection`, `grab_button_any_modifier_events`.
+- `keys` left the contract for `&.` (experiment 9). By exception, six `valid` cases
+  were rewritten and `oracle/mask.ml` and `oracle/semantics.ml` adapted.
 
 ## Questions for the user
 
 Answered: `exp/06-open-calls` is merged after its `grab_button` fix, the spec can
-grow, and rule 2 is rewritten.
+grow, rule 2 is rewritten, and `keys` is replaced by `&.`.
 
 1. **Does the new rule 2 exclude `anyModifier ||| anyModifier` and `anyModifier |||
    noModifier`?** The README lists them as not counting, as asked, and that decision
@@ -285,6 +287,13 @@ grow, and rule 2 is rewritten.
    `` `Any `` tag. Untying accepts that always-false test, or else needs the tag
    back. Neither case is in the spec, and the design is unchanged. Recommendation:
    untie, since rule 2 beats rule 3, and add `m &~ locks` as a `valid` case.
+3. **Should `shiftMask &. anyModifier` stay in `misuse`?** It was asked for as
+   `invalid`, but C gets no `BadValue` on it (experiment 9), so there it's a `FAIL`
+   line in `spec.t`, which the rules forbid. It would take a change to what `invalid`
+   means, for instance "or a value C can never use". The case is rejected either way.
+4. **Should the contract name the eight modifiers?** `keys` hid them; now each of the
+   six rewritten cases builds `modifiers` itself, as every port would. A constant
+   such as `allModifiers` would avoid that, if a name with no C equivalent is fine.
 
 ## Summary
 
@@ -294,11 +303,13 @@ grow, and rule 2 is rewritten.
 (`select_input : ([< eventFlags ], 'c) mask -> unit`). `'c` is `alone` for
 `anyModifier`, `union` for the operands of `|||` and for the masks the server sends,
 free in the constants and in results of `|||`. Each mask of a call has its own `'c`.
-Covariance makes `let m = a ||| b` polymorphic.
+Covariance makes `let m = a ||| b` polymorphic. `m &. modifiers` intersects a state or
+modifiers with a set of modifiers, and the result fits a grab.
 
-**The score:** valid 25/25, invalid 16/16, misuse 12/12. No case fails, and the
+**The score:** valid 25/25, invalid 16/16, misuse 15/15. No case fails, and the
 rejections read as their comments say. `test/probe.t` and `test/conform.t` are
-unchanged and pass. `test/spec.t` changed only in its totals.
+unchanged and pass. `test/spec.t` changed only in its totals. `shiftMask &.
+anyModifier` counts in `misuse`, not in `invalid` where it was asked for: question 3.
 
 **Why it takes two parameters:** experiment 3's argument. `valid/binding_table` and
 `invalid/grab_key_any_modifier_union` can't both pass with one type variable shared
@@ -308,6 +319,8 @@ by the operands and the result of `|||`.
 
 - `m &~ locks` and `m &&& locks`, with `m` possibly AnyModifier and `locks` typed
   `union`: question 2.
+- `ev.state &. m`, with `m` possibly AnyModifier: refused by decision, as
+  `misuse/and_dot_any_modifier` requires.
 - `{ m : keyMask }` then `b.m ||| lockMask`. The type admits AnyModifier, for which C
   gets a `BadValue`, so rule 1 requires the refusal. A field typed
   `([ `Key ], union) mask` can be or-ed and grabbed, but that type has no name yet.
@@ -347,6 +360,8 @@ can take anyway:
   the value isn't AnyModifier.
 - `ev.state &&& anyModifier` becomes an error: it was always false.
 - `let m = a ||| b` can now be used in several fields, with no annotation.
-- `keys` and `noModifier` are new names, `keys` being how a state becomes a grab.
+- `&.` and `noModifier` are new names. `&.` is how a state becomes a grab, and the
+  program names the modifiers it keeps: `grab_key (ev.state &. (mod4Mask ||| shiftMask))`.
+  x11 has no `keys` to remove, but its planned `keys` won't be added.
 - The `` `Any `` tag goes away, along with its row in `keyMask`.
 - `lib/internal/mask.ml` declares the types, and the ctypes side keeps seeing `int`s.
