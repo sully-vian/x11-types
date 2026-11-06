@@ -16,9 +16,9 @@ type union
 type alone
 (** ['c] of the masks that may be [anyModifier] *)
 
-type keyMask = ([ `Key ], alone) mask
-(** Modifiers that may be [anyModifier]: [SETofKEYMASK or AnyModifier]. The type
-    of a table of bindings. *)
+type 'c keyMask = ([ `Key ], 'c) mask
+(** The modifiers of a grab, [SETofKEYMASK or AnyModifier]. Annotate with
+    [_ keyMask]: ['c] follows the value. *)
 
 type stateMask = ([ `Key | `Button ], union) mask
 (** The state of an event: [SETofKEYBUTMASK], and the XKB group *)
@@ -27,13 +27,14 @@ type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent 
 type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
 type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
 
-type eventMask = (eventFlags, union) mask
-(** [SETofEVENT] *)
+type 'a eventMask = (([> eventFlags ] as 'a), union) mask
+(** [SETofEVENT]. Annotate with [_ eventMask]: the row stays open, so the value
+    can still take other flags. Likewise for the next two. *)
 
-type pointerEventMask = (pointerEventFlags, union) mask
+type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
 (** [SETofPOINTEREVENT] *)
 
-type deviceEventMask = (deviceEventFlags, union) mask
+type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
 (** [SETofDEVICEEVENT] *)
 
 val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
@@ -159,9 +160,9 @@ val query_pointer : int -> stateMask
 (** XQueryPointer's mask_return *)
 
 type windowAttributes = {
-  all_event_masks : eventMask;
-  your_event_mask : eventMask;
-  do_not_propagate_mask : deviceEventMask;
+  all_event_masks : 'a. (([> eventFlags ] as 'a), union) mask;
+  your_event_mask : 'a. (([> eventFlags ] as 'a), union) mask;
+  do_not_propagate_mask : 'a. (([> deviceEventFlags ] as 'a), union) mask;
 }
 
 val window_attributes :

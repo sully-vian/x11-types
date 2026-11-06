@@ -3,11 +3,11 @@
    ./run.sh --spec runs the spec against it, to check that every case is in the
    directory its C equivalent's outcome puts it in. *)
 
-type keyMask = int
+type 'c keyMask = int
 type stateMask = int
-type eventMask = int
-type pointerEventMask = int
-type deviceEventMask = int
+type 'a eventMask = int
+type 'a pointerEventMask = int
+type 'a deviceEventMask = int
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
@@ -92,7 +92,7 @@ let create_window ?(event_mask = 0) ?(do_not_propagate_mask = 0) () =
   device_events do_not_propagate_mask
 
 (* XCheckMaskEvent only reads Xlib's queue: the server never sees the mask *)
-let check_mask_event (_ : eventMask) = ()
+let check_mask_event (_ : _ eventMask) = ()
 
 (* Masks the server sends: the raw values, as C gets them *)
 type keyEvent = { state : stateMask }
@@ -103,9 +103,9 @@ let button_press state : buttonEvent = { state }
 let query_pointer state = state
 
 type windowAttributes = {
-  all_event_masks : eventMask;
-  your_event_mask : eventMask;
-  do_not_propagate_mask : deviceEventMask;
+  all_event_masks : int;
+  your_event_mask : int;
+  do_not_propagate_mask : int;
 }
 
 let window_attributes ~all ~yours ~dont_propagate =
