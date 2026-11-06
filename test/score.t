@@ -6,9 +6,7 @@
   pass valid/check_mask_event
   pass valid/create_window
   pass valid/device_mask_as_selection
-  FAIL valid/difference_key_mask: rejected
-  Error: The value locks has type ([ `Key ], Mask.union) Mask.mask
-         Type Mask.union is not compatible with type Mask.alone
+  pass valid/difference_key_mask
   pass valid/do_not_propagate
   FAIL valid/event_mask_or_pointer_mask: rejected
   Error: The value click has type
@@ -32,9 +30,7 @@
   pass valid/send_event
   pass valid/shared_event_mask
   pass valid/sowm_clean_compare
-  FAIL valid/test_key_mask: rejected
-  Error: The value locks has type ([ `Key ], Mask.union) Mask.mask
-         Type Mask.union is not compatible with type Mask.alone
+  pass valid/test_key_mask
   pass valid/ungrab
   pass valid/xkb_group
   pass invalid/and_dot_any_modifier_union
@@ -131,6 +127,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 26/30
+  valid: 28/30
   invalid: 17/17
   misuse: 14/14
