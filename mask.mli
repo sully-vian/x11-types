@@ -37,7 +37,7 @@ type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
 type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
 (** [SETofDEVICEEVENT] *)
 
-val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
+val ( ||| ) : ('a, union) mask -> ('b, union) mask -> ('r, 'c) mask
 (** Union. [anyModifier] can't be an operand: [AnyModifier | ShiftMask] is a
     [BadValue]. *)
 
