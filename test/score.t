@@ -33,9 +33,7 @@
   pass valid/send_event
   pass valid/shared_event_mask
   pass valid/sowm_clean_compare
-  FAIL valid/state_test_key_mask: rejected
-  Error: The value m has type 'a Mask.keyMask = ([ `Key ], 'a) Mask.mask
-         The first variant type does not allow tag(s) `Button
+  pass valid/state_test_key_mask
   pass valid/test_event_masks
   pass valid/test_key_mask
   pass valid/ungrab
@@ -134,6 +132,6 @@
   Error: The value keyPressMask has type ([> `DeviceEvent ], 'a) Mask.mask
          The second variant type does not allow tag(s) `DeviceEvent
   
-  valid: 35/37
+  valid: 36/37
   invalid: 17/17
   misuse: 14/14
