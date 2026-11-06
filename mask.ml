@@ -2,7 +2,7 @@ type (+'a, +'c) mask = int
 type union
 type alone
 
-type 'c keyMask = ([ `Key ], 'c) mask
+type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
 type stateMask = ([ `Key | `Button ], union) mask
 type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
 type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
