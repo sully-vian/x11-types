@@ -38,7 +38,9 @@ type deviceEventMask = (deviceEventFlags, union) mask
 
 val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
 (** Union. [anyModifier] can't be an operand: [AnyModifier | ShiftMask] is a
-    [BadValue]. *)
+    [BadValue]. Both operands list the same flags, so a value annotated with a
+    narrower type needs a coercion before taking a flag it doesn't list:
+    [(click :> eventMask) ||| exposureMask]. Without the annotation, it doesn't. *)
 
 val ( &&& ) : ('a, 'c) mask -> ('a, 'd) mask -> bool
 (** [m &&& flags]: [m] holds at least one of [flags], like C's [m & flags] *)
